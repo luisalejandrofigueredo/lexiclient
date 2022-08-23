@@ -1,0 +1,20 @@
+<form [formGroup]="connectionForm" (ngSubmit)="submit()">
+  <div fxLayout="row" fxLayoutAlign="center center">
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Node</mat-label>
+      <input type="text" placeholder="Select node" aria-label="Node" matInput formControlName="name"
+        [matAutocomplete]="auto">
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+        <mat-option *ngFor="let option of filteredNodes " [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <button color="primary" mat-raised-button type="submit">Ok</button>
+  </div>
+</form>
+<div fxLayout="row" fxLayoutAlign="center center">
+  <form [formGroup]="viewForm">
+    <textarea formControlName="response" cols="30" rows="10"></textarea>
+  </form>
+</div>

@@ -1,0 +1,10 @@
+<form [formGroup]="node" (ngSubmit)="submit()">
+  <mat-form-field>
+    <input matInput autocomplete="off" placeholder="Name" formControlName="name">
+  </mat-form-field>
+  <mat-checkbox formControlName="final"></mat-checkbox>
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
+    <button color="primary" mat-raised-button type="button" (click)="cancel()">Cancel</button>
+    <button color="primary" mat-raised-button type="submit">Accept</button>
+  </div>
+</form>

@@ -1,0 +1,46 @@
+<form [formGroup]="connectionForm" (ngSubmit)="submit()">
+  <div fxLayout="column" fxLayoutAlign="center center">
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Node</mat-label>
+      <input type="text" placeholder="Select node" aria-label="Node" matInput formControlName="name"
+        [matAutocomplete]="auto">
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+        <mat-option *ngFor="let option of filteredNodes " [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>To node</mat-label>
+      <input type="text" placeholder="Select node to connect" aria-label="Node to connect" matInput
+        formControlName="toName" [matAutocomplete]="auto">
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+        <mat-option *ngFor="let option of filteredNodes " [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <div class='componentWarper'>
+      <p class='componentTitle'>String chain</p>
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
+        <mat-form-field *ngIf="!connectionForm.controls.isLanguage.value">
+          <mat-label>Character</mat-label>
+          <input matInput autocomplete="off" formControlName="character">
+        </mat-form-field>
+        <p style="padding-top: 20px" *ngIf="connectionForm.controls.isLanguage.value">{{connectionForm.controls.character.value}}</p>
+        <span class="leftMargin"></span>
+        <mat-checkbox class="checkBox" *ngIf="!connectionForm.controls.isLanguage.value"  formControlName="isRegularExpression">Regular expression</mat-checkbox>
+        <span class="leftMargin"></span>
+        <mat-checkbox class="checkBox" formControlName="isLanguage" (change)="disableCharacter()">Is Language</mat-checkbox>
+        <span class="leftMargin"></span>
+        <button *ngIf="connectionForm.controls.isLanguage.value" mat-icon-button type="button" (click)="addLanguage()">
+          <mat-icon style="padding-top: 20px">label</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
+      <button color="primary" mat-raised-button type="button" (click)="cancel()">Cancel</button>
+      <button color="primary" mat-raised-button type="submit" [disabled]="!this.connectionForm.valid">Accept</button>
+    </div>
+  </div>
+</form>

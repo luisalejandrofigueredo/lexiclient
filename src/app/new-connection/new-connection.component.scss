@@ -1,0 +1,22 @@
+.componentWarper {
+    margin: 40px; /* just for contrast */
+    position: relative;
+    margin-top: 3em;
+    border: 2px solid cornflowerblue;
+    border-radius: 12px;
+    padding: 20px;
+  }
+  
+  .componentWarper .componentTitle {
+    position: absolute;
+    top: -25px;
+    background: #fff;
+    padding: 0 10px;
+  }
+
+  .checkBox{
+    padding-top: 20px;
+  }
+  .leftMargin{
+    padding-left: 20px;
+  }

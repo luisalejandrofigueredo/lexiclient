@@ -1,0 +1,42 @@
+<h1 mat-dialog-title>
+  <p style="text-align:center; font-size: 2em;color: aliceblue;background-color: blue;">Language list</p>
+</h1>
+<div mat-dialog-content>
+  <button mat-icon-button (click)="add()">
+    <mat-icon>add</mat-icon>
+  </button>
+  <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="gappx">
+    <table mat-table #table [dataSource]="DataSource">
+      <ng-container matColumnDef="Name">
+        <th mat-header-cell *matHeaderCellDef><span style="font-size: 2em">Name</span></th>
+        <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+      </ng-container>
+      <ng-container matColumnDef="Chain">
+        <th mat-header-cell *matHeaderCellDef><span style="font-size: 2em">Chain</span></th>
+        <td mat-cell *matCellDef="let row"> {{row.chain}} </td>
+      </ng-container>
+      <ng-container matColumnDef="edit">
+        <th mat-header-cell *matHeaderCellDef><span style="padding-left: 10px;"></span><span
+            style="font-size: 2em">Edit</span></th>
+        <td mat-cell *matCellDef="let row"><span style="padding-left: 10px;"></span><button mat-icon-button
+            (click)="languageEdit(row._id)">
+            <mat-icon>edit</mat-icon>
+          </button></td>
+      </ng-container>
+      <ng-container matColumnDef="returnLanguage">
+        <th mat-header-cell *matHeaderCellDef><span style="padding-left: 10px;"></span><span
+            style="font-size: 2em">select</span></th>
+        <td mat-cell *matCellDef="let row"><span style="padding-left: 10px;"></span><button mat-icon-button
+            (click)="returnLanguage(row.name,row.isRegularExpression)">
+            <mat-icon>done</mat-icon>
+          </button></td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="['Name','Chain','edit','returnLanguage']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['Name','Chain','edit','returnLanguage'];"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="pageSizeOptions" aria-label="Select page"></mat-paginator>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button type="button" color="primary" (click)="cancel()">Cancel</button>
+</div>

@@ -1,0 +1,16 @@
+table {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  mat-header-cell, mat-cell {
+    justify-content: center;
+  }
+  
+  .mat-paginator-page-size{
+    display: none;
+  }
+  
+  .mat-paginator-range-label{
+    display: none;
+  }

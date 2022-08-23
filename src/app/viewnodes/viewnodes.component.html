@@ -1,0 +1,25 @@
+<p style="text-align:center; font-size: 2em;color: aliceblue;background-color: blue;">Nodes list</p>
+<button mat-icon-button (click)="gotoAdd()"><mat-icon>add</mat-icon></button>
+<div  fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="gappx">
+  <table mat-table #table [dataSource]="DataSource">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef><span style="font-size: 2em">Name</span></th>
+      <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+    </ng-container>
+    <ng-container matColumnDef="final">
+      <th mat-header-cell *matHeaderCellDef><span style="padding-left: 10px;"></span><span style="font-size: 2em">Final</span></th>
+      <td mat-cell *matCellDef="let row"><span style="padding-left: 10px;"></span><mat-checkbox disabled="true" [checked]="row.final"></mat-checkbox></td>
+    </ng-container>
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell *matHeaderCellDef><span style="padding-left: 10px;"></span><span style="font-size: 2em">Edit</span></th>
+      <td mat-cell *matCellDef="let row"><span style="padding-left: 10px;"></span><button mat-icon-button (click)="nodeEdit(row.name)"><mat-icon>edit</mat-icon></button></td>
+    </ng-container>
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef><span style="padding-left: 10px;"></span><span style="font-size: 2em">Delete</span></th>
+      <td mat-cell *matCellDef="let row"><span style="padding-left: 10px;"></span><button mat-icon-button (click)="nodeDelete(row._id)"><mat-icon>delete</mat-icon></button></td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="['name','final','edit','delete']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['name','final','edit','delete'];"></tr>
+  </table>
+  <mat-paginator  [pageSizeOptions]="pageSizeOptions"  (page)="pageEvent($event)" aria-label="Select page" ></mat-paginator>
+</div>

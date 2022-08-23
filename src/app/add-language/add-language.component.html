@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Languages</h1>
+<div mat-dialog-content>
+  <form [formGroup]="languageForm" (ngSubmit)="submit()">
+    <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="gappx">
+      <mat-form-field>
+        <input matInput autocomplete="off" placeholder="Name" formControlName="name">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput autocomplete="off" placeholder="Chain" formControlName="chain">
+      </mat-form-field>
+      <mat-checkbox formControlName="isRegularExpression">Regular expression</mat-checkbox>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
+      <button mat-raised-button color="primary" type="button" (click)="cancel()">Cancel</button>
+      <button mat-raised-button color="primary" type="submit">Accept</button>
+    </div>
+  </form>
+</div>
