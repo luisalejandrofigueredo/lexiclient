@@ -38,6 +38,7 @@ export class NewConnectionComponent implements OnInit {
           headers: new HttpHeaders({ 'content-type': 'application/json' }),
           params: new HttpParams().append('id', encodeURI(this.id))
         };
+        this.connectionForm.controls.name.disable();
         let subs$ = this.httpClient.get<any>('http://localhost:3000/connections/getOne', options).subscribe((nodeConnection) => {
           console.log('nodeConnection', nodeConnection)
           if (!nodeConnection.status) {

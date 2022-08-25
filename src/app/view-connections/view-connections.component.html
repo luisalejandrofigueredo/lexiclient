@@ -2,6 +2,9 @@
 <button mat-icon-button (click)="add()">
   <mat-icon>add</mat-icon>
 </button>
+<button mat-icon-button (click)="viewRegExp()">
+  <mat-icon>help</mat-icon>
+</button>
 <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="gappx">
   <table mat-table #table [dataSource]="DataSource">
     <ng-container matColumnDef="Node">

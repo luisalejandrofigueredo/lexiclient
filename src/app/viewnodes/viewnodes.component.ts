@@ -46,7 +46,7 @@ export class ViewnodesComponent implements OnInit, AfterViewInit {
     let dialogRef = this.matDialog.open(YesNoComponent, { data: { dialogHeader: 'Delete node', message: `You are sure to delete this node ` } as DialogData });
     dialogRef.afterClosed().subscribe((response) => {
       if (response === 'Ok') {
-        let options = {
+        const options = {
           headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
           params: new HttpParams().append('id', id)
         };
@@ -56,6 +56,13 @@ export class ViewnodesComponent implements OnInit, AfterViewInit {
           } else {
             console.log('Result',result.name)
             this.matSnackBar.open('Deleted' ,`Node ${result.name}`,{duration:3000});
+            let optionsDeleteConnections = {
+              headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+              params: new HttpParams().append('name', result.name)
+            };
+            const deleteConnection$=this.httpClient.delete<any>('http://localhost:3000/connections/deleteNodeConnections/',optionsDeleteConnections).subscribe((_result)=>{
+              this.matSnackBar.open('Deleted' ,`Node connections for ${result.name}`,{duration:3000});
+            });
           }
           this.getNodes();
           delete$.unsubscribe();

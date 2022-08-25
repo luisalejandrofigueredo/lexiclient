@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { YesNoComponent } from '../yes-no/yes-no.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogData } from '../yes-no/dialog-data';
-import {Node} from '../interfaces/node'
+import { Node } from '../interfaces/node'
 
 @Component({
   selector: 'app-view-connections',
@@ -17,7 +17,7 @@ import {Node} from '../interfaces/node'
   styleUrls: ['./view-connections.component.scss']
 })
 export class ViewConnectionsComponent implements OnInit {
-  constructor(private dialog:MatDialog,private httpCLient: HttpClient, private matSnackBar: MatSnackBar,private router:Router) { }
+  constructor(private dialog: MatDialog, private httpCLient: HttpClient, private matSnackBar: MatSnackBar, private router: Router) { }
   DataSource: MatTableDataSource<NodeConnections[]> = new MatTableDataSource();
   pageSize = 10;
   pageSizeOptions: number[] = [10, 25, 100];
@@ -35,20 +35,20 @@ export class ViewConnectionsComponent implements OnInit {
         subs$.unsubscribe();
       });
   }
-  
+
   ngAfterViewInit() {
     this.DataSource.paginator = this.paginator;
   }
 
-  nodeConnectionEdit(id:string){
-    this.router.navigate(['/addConnection','edit',id]);
+  nodeConnectionEdit(id: string) {
+    this.router.navigate(['/addConnection', 'edit', id]);
   }
 
   add() {
-    this.router.navigate(['/addConnection','add','']);
-   }
+    this.router.navigate(['/addConnection', 'add', '']);
+  }
 
-   deleteNodeConnection(id:string,nodeName:string){
+  deleteNodeConnection(id: string, nodeName: string) {
     let dialogRef = this.dialog.open(YesNoComponent, {
       data: {
         dialogHeader: 'Confirm relation deletion',
@@ -61,19 +61,29 @@ export class ViewConnectionsComponent implements OnInit {
           headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
           params: new HttpParams().append('name', encodeURI(nodeName))
         };
-        const sub$=this.httpCLient.get<Node>('http://localhost:3000/node/getOne',options).subscribe((node)=>{
-          console.log('Node',node);
+        const sub$ = this.httpCLient.get<Node>('http://localhost:3000/node/getOne', options).subscribe((node) => {
           const optionsDelete = {
             headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-            params: new HttpParams().append('_idNode', encodeURI(node._id!==undefined ? node._id:'' ))
-            .append("_idNodeConnection",encodeURI(id))
+            params: new HttpParams().append('_idNode', encodeURI(node._id !== undefined ? node._id : ''))
+              .append("_idNodeConnection", encodeURI(id))
           };
-          const subDelete$=this.httpCLient.delete('http://localhost:3000/node/deleteOneConnection',optionsDelete).subscribe((deleted)=>{
-            console.log('register deleted')
+          const subDelete$ = this.httpCLient.delete('http://localhost:3000/node/deleteOneConnection', optionsDelete).subscribe((deleted) => {
+            const optionsNodeConnection = {
+              headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+            };
+            let subsNodeConnection$ = this.httpCLient.get<NodeConnections[]>('http://localhost:3000/connections/listAll/',
+              optionsNodeConnection).subscribe((listSubscribe: any) => {
+                this.DataSource = new MatTableDataSource(listSubscribe);
+                this.DataSource.paginator = this.paginator;
+                subsNodeConnection$.unsubscribe();
+              });
           });
           sub$.unsubscribe();
         });
       }
     });
-   }
+  }
+  viewRegExp() {
+    window.open("https://regexr.com/", "_blank");
+  }
 }
