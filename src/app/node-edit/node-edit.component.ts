@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Node } from '../interfaces/node';
+import{NodeService} from '../node.service';
 @Component({
   selector: 'app-node-edit',
   templateUrl: './node-edit.component.html',
@@ -16,40 +17,30 @@ export class NodeEditComponent implements OnInit {
     name: new FormControl<String>('', Validators.required),
     final: new FormControl<boolean>(false)
   });
-  constructor(private matSnackBar: MatSnackBar, private httpClient: HttpClient, private route: ActivatedRoute, private router: Router) {
+  constructor(private nodeService:NodeService ,private matSnackBar: MatSnackBar, private httpClient: HttpClient, private route: ActivatedRoute, private router: Router) {
 
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.route.params.subscribe((params) => {
-      const options = {
-        params: new HttpParams().append('name', encodeURI(String(params['name'])))
-      };
-      let subs$ = this.httpClient.get<Node>('http://localhost:3000/node/getOne/', options).subscribe((retNode: Node) => {
-        this.node = retNode;
-        this.nodeForm.controls.name.setValue(retNode.name);
-        this.nodeForm.controls.final.setValue(retNode.final);
-        subs$.unsubscribe();
-      }, (error) => { console.error('Error', error) });
-    })
-  }
+      this.nodeService.getOne(encodeURI(String(params['name']))).then(accept=>{
+        if (typeof accept==='object'){
+          this.node = accept;
+          this.nodeForm.controls.name.setValue(this.node.name);
+          this.nodeForm.controls.final.setValue(this.node.final);
+        }
+      }).catch((error)=>{});
+  })}
 
   submit() {
     const options = {
     };
-    const body = {
+    const node = {
       _id: this.node._id != null ? this.node._id : '',
       'name': this.nodeForm.controls.name.value,
       'final': this.nodeForm.controls.final.value
-    };
-    let subs$ = this.httpClient.put<any>('http://localhost:3000/node/edit/', body, options).subscribe((response) => {
-      if (response.status !== 'duplicate node') {
-        let snack = this.matSnackBar.open('Node modified', '', { duration: 3000 });
-      } else {
-        let snack = this.matSnackBar.open('Duplicate node', '', { duration: 3000 });
-      }
-      subs$.unsubscribe();
-    }, (error) => { console.error('Error', error) });
+    } as Node;
+    this.nodeService.nodeEdit(node)
     this.router.navigate(['/viewNodes']);
   }
 

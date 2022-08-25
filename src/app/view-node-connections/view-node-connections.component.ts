@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Node } from '../interfaces/node';
+import { NodeService } from '../node.service'
 @Component({
   selector: 'app-view-node-connections',
   templateUrl: './view-node-connections.component.html',
@@ -17,28 +18,18 @@ export class ViewNodeConnectionsComponent implements OnInit {
   filteredNodes: string[] = [];
   options = { headers: new HttpHeaders({ 'content-type': 'application/json' }) };
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private nodeService:NodeService, private httpClient: HttpClient) { }
   ngOnInit(): void {
-    let subs$ = this.httpClient.get<Node[]>('http://localhost:3000/node/ListAll/',
-      this.options).subscribe((listSubscribe: Node[]) => {
-        listSubscribe.forEach((nodeElement) => {
+    let subs$ = this.nodeService.getAll().then((listNodes: Node[]|boolean) => {
+      if (typeof listNodes==='object')
+         listNodes.forEach((nodeElement) => {
           this.filteredNodes.push(nodeElement.name);
         });
-        subs$.unsubscribe();
-      });
+      }).catch((error=>{console.log('Error',error)}))
   }
 
   submit() {
-    const options = {
-      headers: new HttpHeaders({ 'content-type': 'application/json' }),
-      params: new HttpParams().append('name', encodeURI(String(this.connectionForm.controls.name.value)))
-    };
-    console.log('Name', this.connectionForm.controls.name.value);
-    let subs$ = this.httpClient.get<Node>('http://localhost:3000/node/getOne',
-      options).subscribe((nodeSubscribe: Node) => {
-        this.viewForm.controls.response.setValue(JSON.stringify(nodeSubscribe, null, 2));
-        subs$.unsubscribe();
-      });
-
+    const getNode=this.nodeService.getOne(this.connectionForm.controls.name.value);
+    getNode.then(response=>{this.viewForm.controls.response.setValue(JSON.stringify(response, null, 2));}).catch((error)=>{console.log('error')})
   }
 }
