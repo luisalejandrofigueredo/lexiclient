@@ -22,9 +22,9 @@ export class NodenewComponent implements OnInit {
 
   }
 
-  submit() {
+  async submit() {
     let body = { name: this.node.controls.name.value, final: this.node.controls.final.value } as Node;
-    this.nodeService.nodeAdd(body).then(response => {
+    await this.nodeService.nodeAdd(body).then(response => {
       let snack = this.matSnackBar.open(`Node created Name:${typeof response !== 'boolean' ? response.name : ''}`, 'Node created', {
         duration: 3000
       });

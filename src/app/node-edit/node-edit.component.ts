@@ -4,7 +4,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Node } from '../interfaces/node';
-import{NodeService} from '../node.service';
+import { NodeService } from '../node.service';
+import { NodeConnectionsService } from '../node-connections.service';
 @Component({
   selector: 'app-node-edit',
   templateUrl: './node-edit.component.html',
@@ -12,27 +13,31 @@ import{NodeService} from '../node.service';
 })
 export class NodeEditComponent implements OnInit {
   name!: string;
+  oldName!: string;
   node!: Node;
   nodeForm = new FormGroup({
-    name: new FormControl<String>('', Validators.required),
+    name: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
     final: new FormControl<boolean>(false)
   });
-  constructor(private nodeService:NodeService ,private matSnackBar: MatSnackBar, private httpClient: HttpClient, private route: ActivatedRoute, private router: Router) {
+  constructor(private nodeConnectionService: NodeConnectionsService, private nodeService: NodeService, private matSnackBar: MatSnackBar, private httpClient: HttpClient, private route: ActivatedRoute, private router: Router) {
 
   }
 
   async ngOnInit(): Promise<void> {
     this.route.params.subscribe((params) => {
-      this.nodeService.getOne(encodeURI(String(params['name']))).then(accept=>{
-        if (typeof accept==='object'){
+      console.log('String param name',params['name']);
+      this.nodeService.getOne(String(params['name'])).then(accept => {
+        if (typeof accept === 'object') {
           this.node = accept;
+          this.oldName = this.node.name;
           this.nodeForm.controls.name.setValue(this.node.name);
           this.nodeForm.controls.final.setValue(this.node.final);
         }
-      }).catch((error)=>{});
-  })}
+      }).catch((error) => { });
+    })
+  }
 
-  submit() {
+  async submit() {
     const options = {
     };
     const node = {
@@ -40,8 +45,13 @@ export class NodeEditComponent implements OnInit {
       'name': this.nodeForm.controls.name.value,
       'final': this.nodeForm.controls.final.value
     } as Node;
-    this.nodeService.nodeEdit(node)
-    this.router.navigate(['/viewNodes']);
+    if (this.oldName !== this.nodeForm.controls.name.value) {
+      await this.nodeService.nodeEdit(node).then(async (accept) => {
+        await this.nodeConnectionService.updateConnectionName(this.oldName,this.nodeForm.controls.name.value).then((accept) => {
+        }).catch((error) => { });
+      }).catch((error) => { });
+    }
+    await this.router.navigate(['/viewNodes']);
   }
 
   cancel() {

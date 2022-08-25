@@ -8,18 +8,41 @@ import { NodeConnections } from './interfaces/node-connections';
 export class NodeConnectionsService {
 
   constructor(private httpClient: HttpClient) { }
-
+modifyConnection(id:string):Promise<boolean>{
+  return new Promise((accept,reject)=>{
+    
+  });
+}
   deleteNodeConnections(name: string): Promise<string | boolean> {
     return new Promise((accept, reject) => {
       let options = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
         params: new HttpParams().append('name', name)
       };
-      const deleteConnection$ = this.httpClient.delete<any>('http://localhost:3000/connections/deleteNodeConnections/', options).pipe(take(1)).subscribe((_result) => { 
+      const deleteConnection$ = this.httpClient.delete<any>('http://localhost:3000/connections/deleteNodeConnections/', options).pipe(take(1)).subscribe((_result) => {
         deleteConnection$.unsubscribe();
         accept(name);
-       },
+      },
         (error) => reject(false));
+    });
+  }
+
+  updateConnectionName(name: string,newName:string): Promise<boolean> {
+    return new Promise((accept, reject) => {
+      const options = {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+      };
+      let sub$ = this.httpClient.put<{ status: string }>('http://localhost:3000/connections/editName/', { name: name,newName:newName }).subscribe(response => {
+        console.log('response status',response.status)
+        if (response.status === 'OK') {
+          accept(true);
+        }
+        else {
+          reject(false);
+        }
+      }, (error) => {
+        reject(false);
+      });
     });
   }
 
@@ -32,7 +55,7 @@ export class NodeConnectionsService {
         options).pipe(take(1)).subscribe((response: NodeConnections[]) => {
           subs$.unsubscribe();
           accept(response)
-        },(error)=>{
+        }, (error) => {
           subs$.unsubscribe();
           reject(false)
         });

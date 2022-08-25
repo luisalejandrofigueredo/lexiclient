@@ -26,6 +26,7 @@ export class NewConnectionComponent implements OnInit {
   options = { headers: new HttpHeaders({ 'content-type': 'application/json' }) };
   action!: string;
   id!: string;
+  oldName!:string;
   constructor(private activatedRoute: ActivatedRoute, public dialog: MatDialog, private httpClient: HttpClient, private router: Router, private matSnackBar: MatSnackBar) { }
 
   ngOnInit(): void {
@@ -42,6 +43,7 @@ export class NewConnectionComponent implements OnInit {
         let subs$ = this.httpClient.get<any>('http://localhost:3000/connections/getOne', options).subscribe((nodeConnection) => {
           console.log('nodeConnection', nodeConnection)
           if (!nodeConnection.status) {
+            this.oldName=nodeConnection.name;
             this.connectionForm.setValue({
               name: nodeConnection.name,
               toName: nodeConnection.toName,
@@ -101,11 +103,14 @@ export class NewConnectionComponent implements OnInit {
         character: this.connectionForm.controls.character.value,
         isRegularExpression: this.connectionForm.controls.isRegularExpression.value
       };
-      this.httpClient.put<any>('http://localhost:3000/connections/edit', body, options).subscribe(response => {
+       this.httpClient.put<any>('http://localhost:3000/connections/edit', body, options).subscribe(response => {
         if (response.status !== 'duplicate node') {
           let snack = this.matSnackBar.open('Connection modified', '', { duration: 3000 });
         } else {
           let snack = this.matSnackBar.open('Duplicate connection', '', { duration: 3000 });
+        }
+        if (this.oldName!==this.connectionForm.controls.name.value){
+          
         }
         this.router.navigate(['/viewConnections']);
       }, error => {

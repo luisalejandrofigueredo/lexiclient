@@ -95,10 +95,10 @@ export class NodeService {
       let subs$ = this.httpClient.put<any>('http://localhost:3000/node/edit/', node, options).subscribe((response) => {
       if (response.status !== 'duplicate node') {
         subs$.unsubscribe();
-        reject(false);
+        accept(true);
       } else {
         subs$.unsubscribe();
-        accept(true);
+        reject(false);
       }
     }, (error) => { subs$.unsubscribe();console.error('Error', error) });
     });
