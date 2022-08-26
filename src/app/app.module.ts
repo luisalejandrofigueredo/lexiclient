@@ -35,6 +35,7 @@ import { ViewLanguageComponent } from './view-language/view-language.component';
 import { AddLanguageComponent } from './add-language/add-language.component';
 import {InterceptorInterceptor} from './interceptor.interceptor';
 import { ViewNodeConnectionsComponent } from './view-node-connections/view-node-connections.component';
+import { NewProjectComponent } from './new-project/new-project.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,7 +50,8 @@ import { ViewNodeConnectionsComponent } from './view-node-connections/view-node-
     DeleteAllConnectionsComponent,
     ViewLanguageComponent,
     AddLanguageComponent,
-    ViewNodeConnectionsComponent
+    ViewNodeConnectionsComponent,
+    NewProjectComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,14 @@
+<form [formGroup]="formProject" (ngSubmit)="submit()">
+  <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="gappx">
+  <mat-form-field>
+    <input matInput autocomplete="off" placeholder="Project name" formControlName="name">
+  </mat-form-field>
+  <mat-form-field  style="width: 100%;min-width: 150px;max-width: 500px;">
+    <input matInput autocomplete="off" placeholder="Description" formControlName="description">
+  </mat-form-field>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
+    <button color="primary" mat-raised-button type="button" (click)="cancel()">Cancel</button>
+    <button color="primary" [disabled]="!this.formProject.valid" mat-raised-button type="submit">Accept</button>
+  </div>
+</form>

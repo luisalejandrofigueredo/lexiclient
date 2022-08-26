@@ -9,6 +9,7 @@ import { ViewConnectionsComponent } from './view-connections/view-connections.co
 import { EditConnectionComponent } from './edit-connection/edit-connection.component';
 import { DeleteAllConnectionsComponent } from './delete-all-connections/delete-all-connections.component';
 import {ViewNodeConnectionsComponent} from './view-node-connections/view-node-connections.component';
+import {NewProjectComponent} from './new-project/new-project.component';
 const routes: Routes = [
   { path: 'newNode', component: NodenewComponent },
   { path: 'viewNodes', component: ViewnodesComponent },
@@ -18,7 +19,8 @@ const routes: Routes = [
   { path: 'nodeEdit/:name', component: NodeEditComponent },
   { path: 'editConnection/:id', component: EditConnectionComponent },
   { path: 'deleteAllConnections', component: DeleteAllConnectionsComponent },
-  { path:'viewNodeConnections',component:ViewNodeConnectionsComponent}
+  { path:'viewNodeConnections',component:ViewNodeConnectionsComponent},
+  { path:'newProject',component:NewProjectComponent}
 ];
 
 @NgModule({
