@@ -20,7 +20,7 @@ export class ViewNodeConnectionsComponent implements OnInit {
 
   constructor(private nodeService:NodeService, private httpClient: HttpClient) { }
   ngOnInit(): void {
-    let subs$ = this.nodeService.getAll().then((listNodes: Node[]|boolean) => {
+    let subs$ = this.nodeService.getAll(localStorage.getItem('project')!).then((listNodes: Node[]|boolean) => {
       if (typeof listNodes==='object')
          listNodes.forEach((nodeElement) => {
           this.filteredNodes.push(nodeElement.name);
@@ -29,7 +29,7 @@ export class ViewNodeConnectionsComponent implements OnInit {
   }
 
   submit() {
-    const getNode=this.nodeService.getOne(this.connectionForm.controls.name.value);
+    const getNode=this.nodeService.getOne(localStorage.getItem('project')!,this.connectionForm.controls.name.value);
     getNode.then(response=>{this.viewForm.controls.response.setValue(JSON.stringify(response, null, 2));}).catch((error)=>{console.log('error')})
   }
 }

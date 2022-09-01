@@ -22,12 +22,13 @@ export class NewProjectComponent implements OnInit {
   
 
   submit(){
-    this.projectService.projectAdd({projectName:this.formProject.controls.name.value,description:this.formProject.controls.description.value})
-      localStorage.setItem('project',this.formProject.controls.name.value);
-      this.router.navigate(['/']);
+    this.projectService.projectAdd({projectName:this.formProject.controls.name.value,description:this.formProject.controls.description.value});
+    localStorage.setItem('project',this.formProject.controls.name.value);
+    this.router.navigate(['viewProjects']);
   }
+  
   cancel(){
-    this.router.navigate(['/']);
+    this.router.navigate(['viewProjects']);
   }
 
 }

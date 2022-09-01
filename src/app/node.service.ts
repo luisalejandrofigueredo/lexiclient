@@ -8,11 +8,11 @@ import { take } from 'rxjs';
 export class NodeService {
   constructor(private httpClient: HttpClient) { }
   //Get one node by name
-  getOne(name: string): Promise<Node | boolean> {
+  getOne(project:string,name: string): Promise<Node | boolean> {
     return new Promise((resolve, reject) => {
       const options = {
         headers: new HttpHeaders({ 'content-type': 'application/json' }),
-        params: new HttpParams().append('name', encodeURI(name))
+        params: new HttpParams().append('project', encodeURI(project)).append('name',encodeURI(name))
       };
       const url = 'http://localhost:3000/node/getOne';
       let sub$ = this.httpClient.get<Node>(url, options).pipe(take(1)).subscribe(response => {
@@ -25,17 +25,18 @@ export class NodeService {
     });
   }
   //Get all nodes
-  getAll(): Promise<Node[] | boolean> {
+  getAll(project: string): Promise<Node[] | boolean> {
     return new Promise((resolve, reject) => {
-      const options = { headers: new HttpHeaders({ 'content-type': 'application/json' }) };
-      const url = 'http://localhost:3000/node/ListAll/';
-      let sub$ = this.httpClient.get<Node[]>(url, options).pipe(take(1)).subscribe(response => {
-        sub$.unsubscribe();
-        resolve(response)
-      }, (error) => {
-        sub$.unsubscribe();
-        reject(false);
-      });
+        const options = { headers: new HttpHeaders({ 'content-type': 'application/json' }),
+        params: new HttpParams().append('project', encodeURI(project)) };
+        const url = 'http://localhost:3000/node/ListAll/';
+        let sub$ = this.httpClient.get<Node[]>(url, options).pipe(take(1)).subscribe(response => {
+          sub$.unsubscribe();
+          resolve(response)
+        }, (error) => {
+          sub$.unsubscribe();
+          reject(false);
+        });
     });
   }
 
@@ -93,14 +94,14 @@ export class NodeService {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       };
       let subs$ = this.httpClient.put<any>('http://localhost:3000/node/edit/', node, options).subscribe((response) => {
-      if (response.status !== 'duplicate node') {
-        subs$.unsubscribe();
-        accept(true);
-      } else {
-        subs$.unsubscribe();
-        reject(false);
-      }
-    }, (error) => { subs$.unsubscribe();console.error('Error', error) });
+        if (response.status !== 'duplicate node') {
+          subs$.unsubscribe();
+          accept(true);
+        } else {
+          subs$.unsubscribe();
+          reject(false);
+        }
+      }, (error) => { subs$.unsubscribe(); console.error('Error', error) });
     });
   }
 }

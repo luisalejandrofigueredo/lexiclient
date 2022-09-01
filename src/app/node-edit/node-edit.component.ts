@@ -25,8 +25,7 @@ export class NodeEditComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.route.params.subscribe((params) => {
-      console.log('String param name',params['name']);
-      this.nodeService.getOne(String(params['name'])).then(accept => {
+      this.nodeService.getOne(localStorage.getItem('project')!,String(params['name'])).then(accept => {
         if (typeof accept === 'object') {
           this.node = accept;
           this.oldName = this.node.name;

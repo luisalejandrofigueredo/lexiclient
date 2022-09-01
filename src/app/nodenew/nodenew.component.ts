@@ -12,7 +12,7 @@ import { NodeService } from '../node.service'
 })
 export class NodenewComponent implements OnInit {
   node = new FormGroup({
-    name: new FormControl<String>('', { nonNullable: true, validators: Validators.required }),
+    name: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
     final: new FormControl<boolean>(false, { nonNullable: true })
   });
 
@@ -23,7 +23,7 @@ export class NodenewComponent implements OnInit {
   }
 
   async submit() {
-    let body = { name: this.node.controls.name.value, final: this.node.controls.final.value } as Node;
+    let body = { project: localStorage.getItem('project'),name: this.node.controls.name.value, final: this.node.controls.final.value } as Node;
     await this.nodeService.nodeAdd(body).then(response => {
       let snack = this.matSnackBar.open(`Node created Name:${typeof response !== 'boolean' ? response.name : ''}`, 'Node created', {
         duration: 3000

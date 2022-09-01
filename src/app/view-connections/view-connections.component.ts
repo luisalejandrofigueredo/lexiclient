@@ -54,7 +54,7 @@ export class ViewConnectionsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result === 'Ok') {
-        await this.nodeService.getOne(nodeName).then(async (response) => {
+        await this.nodeService.getOne(localStorage.getItem('project')!,nodeName).then(async (response) => {
           if (typeof response === 'object' && typeof response !== 'undefined') {
             const idNode = response._id;
             this.callDelete(typeof idNode !== 'undefined' ? idNode : '', id);

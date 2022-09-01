@@ -22,6 +22,7 @@ export class ViewnodesComponent implements OnInit, AfterViewInit {
   pageSizeOptions: number[] = [10, 25, 100];
   header = new HttpHeaders
   params: parPage = { skip: 0, limit: 10 };
+  project!:string|null;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   constructor(private nodeConnectionService:NodeConnectionsService,private nodeService: NodeService, private matSnackBar: MatSnackBar, private matDialog: MatDialog, private httpClient: HttpClient, private router: Router) { }
   ngAfterViewInit() {
@@ -60,8 +61,14 @@ export class ViewnodesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getNodes() {
-    this.nodeService.getAll().then(list => {
+  async getNodes() {
+    if (localStorage.getItem('project')===null){
+      this.router.navigate(['/']);
+    } else {
+      this.project=localStorage.getItem('project');  
+    }
+    console.log('local storage',this.project);
+    await this.nodeService.getAll(this.project!).then(list => {
       this.DataSource.paginator = this.paginator;
       if (typeof list === 'object' && typeof list !== 'undefined') {
         this.DataSource = new MatTableDataSource(list);
@@ -84,7 +91,4 @@ export class ViewnodesComponent implements OnInit, AfterViewInit {
         subs$.unsubscribe();
       });
   }
-
-
-
 }
