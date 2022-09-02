@@ -11,7 +11,7 @@ import { NodeService } from '../node.service'
   styleUrls: ['./nodenew.component.scss']
 })
 export class NodenewComponent implements OnInit {
-  node = new FormGroup({
+  nodeForm = new FormGroup({
     name: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
     final: new FormControl<boolean>(false, { nonNullable: true })
   });
@@ -23,13 +23,12 @@ export class NodenewComponent implements OnInit {
   }
 
   async submit() {
-    let body = { project: localStorage.getItem('project'),name: this.node.controls.name.value, final: this.node.controls.final.value } as Node;
+    let body = { project: localStorage.getItem('project'),name: this.nodeForm.controls.name.value, final: this.nodeForm.controls.final.value } as Node;
     await this.nodeService.nodeAdd(body).then(response => {
       let snack = this.matSnackBar.open(`Node created Name:${typeof response !== 'boolean' ? response.name : ''}`, 'Node created', {
         duration: 3000
       });
-    })
-      .catch(_error => { let snack = this.matSnackBar.open('Duplicate node', '', { duration: 3000 }); });
+    }).catch(_error => { let snack = this.matSnackBar.open('Duplicate node', '', { duration: 3000 }); });
     this.router.navigate(['/viewNodes']);
   }
 

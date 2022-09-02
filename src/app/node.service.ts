@@ -91,7 +91,7 @@ export class NodeService {
   nodeEdit(node: Node): Promise<boolean> {
     return new Promise((accept, reject) => {
       const options = {
-        headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
       };
       let subs$ = this.httpClient.put<any>('http://localhost:3000/node/edit/', node, options).subscribe((response) => {
         if (response.status !== 'duplicate node') {

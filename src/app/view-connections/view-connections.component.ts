@@ -27,10 +27,15 @@ export class ViewConnectionsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   constructor(private nodeService: NodeService, private nodeConnectionService: NodeConnectionsService, private dialog: MatDialog, private httpCLient: HttpClient, private matSnackBar: MatSnackBar, private router: Router) { }
   ngOnInit(): void {
-    let proGetAll$ = this.nodeConnectionService.listAll().then(response => {
+   this.getAll();
+  }
+
+  async getAll(){
+    let proGetAll$ = await this.nodeConnectionService.listAll().then(response => {
       if (typeof response !== 'boolean') this.DataSource = new MatTableDataSource(response);
       this.DataSource.paginator = this.paginator;
     }).catch((error) => { });
+
   }
 
   ngAfterViewInit() {
@@ -66,10 +71,7 @@ export class ViewConnectionsComponent implements OnInit {
           else {
             console.log();
           }
-          let proGetAll$ = this.nodeConnectionService.listAll().then(response => {
-            if (typeof response !== 'boolean') this.DataSource = new MatTableDataSource(response);
-            this.DataSource.paginator = this.paginator;
-          });
+          this.getAll();
         });
       }
     })

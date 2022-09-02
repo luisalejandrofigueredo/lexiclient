@@ -8,16 +8,11 @@ import { NodeConnections } from './interfaces/node-connections';
 export class NodeConnectionsService {
 
   constructor(private httpClient: HttpClient) { }
-modifyConnection(id:string):Promise<boolean>{
-  return new Promise((accept,reject)=>{
-    
-  });
-}
-  deleteNodeConnections(name: string): Promise<string | boolean> {
+  deleteNodeConnections(project:string,name: string): Promise<string | boolean> {
     return new Promise((accept, reject) => {
       let options = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-        params: new HttpParams().append('name', name)
+        params: new HttpParams().append('name', name).append('project',encodeURI(project))
       };
       const deleteConnection$ = this.httpClient.delete<any>('http://localhost:3000/connections/deleteNodeConnections/', options).pipe(take(1)).subscribe((_result) => {
         deleteConnection$.unsubscribe();
@@ -30,7 +25,8 @@ modifyConnection(id:string):Promise<boolean>{
   updateConnectionName(name: string,newName:string): Promise<boolean> {
     return new Promise((accept, reject) => {
       const options = {
-        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+        params: new HttpParams().append('project',encodeURI(localStorage.getItem('project')!))
       };
       let sub$ = this.httpClient.put<{ status: string }>('http://localhost:3000/connections/editName/', { name: name,newName:newName }).subscribe(response => {
         console.log('response status',response.status)
@@ -49,7 +45,8 @@ modifyConnection(id:string):Promise<boolean>{
   listAll(): Promise<NodeConnections[] | boolean> {
     return new Promise((accept, reject) => {
       const options = {
-        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+        params: new HttpParams().append('project',encodeURI(localStorage.getItem('project')!))
       };
       let subs$ = this.httpClient.get<NodeConnections[]>('http://localhost:3000/connections/listAll/',
         options).pipe(take(1)).subscribe((response: NodeConnections[]) => {

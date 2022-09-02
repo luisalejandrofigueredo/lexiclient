@@ -1,6 +1,7 @@
 {
   "name": "lexiclient",
   "version": "0.0.0",
+  "author": {"name": "Luis Alejandro Figueredo ","email": "luisalejandrofigueredo@gmail.com"},
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

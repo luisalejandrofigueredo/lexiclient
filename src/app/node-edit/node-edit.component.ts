@@ -25,7 +25,7 @@ export class NodeEditComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.route.params.subscribe((params) => {
-      this.nodeService.getOne(localStorage.getItem('project')!,String(params['name'])).then(accept => {
+      this.nodeService.getOne(localStorage.getItem('project')!, String(params['name'])).then(accept => {
         if (typeof accept === 'object') {
           this.node = accept;
           this.oldName = this.node.name;
@@ -37,19 +37,15 @@ export class NodeEditComponent implements OnInit {
   }
 
   async submit() {
-    const options = {
-    };
     const node = {
       _id: this.node._id != null ? this.node._id : '',
       'name': this.nodeForm.controls.name.value,
       'final': this.nodeForm.controls.final.value
     } as Node;
-    if (this.oldName !== this.nodeForm.controls.name.value) {
-      await this.nodeService.nodeEdit(node).then(async (accept) => {
-        await this.nodeConnectionService.updateConnectionName(this.oldName,this.nodeForm.controls.name.value).then((accept) => {
-        }).catch((error) => { });
+    await this.nodeService.nodeEdit(node).then(async (accept) => {
+      await this.nodeConnectionService.updateConnectionName(this.oldName, this.nodeForm.controls.name.value).then((accept) => {
       }).catch((error) => { });
-    }
+    }).catch((error) => { });
     await this.router.navigate(['/viewNodes']);
   }
 

@@ -41,7 +41,7 @@ export class ViewnodesComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe((response) => {
       if (response === 'Ok') {
         const promNodeDelete = this.nodeService.nodeDelete(id);
-        const promNodeConnections= this.nodeConnectionService.deleteNodeConnections(name);
+        const promNodeConnections= this.nodeConnectionService.deleteNodeConnections(localStorage.getItem('project')!,name);
         Promise.all([promNodeDelete,promNodeConnections]).then((deleteActions) => {
           if (typeof deleteActions[0] !== 'boolean') {
             this.matSnackBar.open('Deleted', `Node ${deleteActions[0]}`, { duration: 3000 });
@@ -82,13 +82,12 @@ export class ViewnodesComponent implements OnInit, AfterViewInit {
 
   pageEvent(event: PageEvent) {
     const options = {
-      params: new HttpParams().append('skip', event.pageIndex * event.pageSize).append('limit', event.pageSize)
+      headers: new HttpHeaders({ 'content-type': 'application/json' })
     };
     let subs$ = this.httpClient.get<Node[]>('http://localhost:3000/node/ListAll/',
       options).subscribe((listSubscribe: any) => {
-        this.DataSource = new MatTableDataSource(listSubscribe);
-        this.DataSource.paginator = this.paginator;
-        subs$.unsubscribe();
+       this.getNodes();
+      subs$.unsubscribe();
       });
   }
 }
