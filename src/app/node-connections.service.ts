@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { take } from 'rxjs';
 import { NodeConnections } from './interfaces/node-connections';
+import { environment } from '../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +15,7 @@ export class NodeConnectionsService {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
         params: new HttpParams().append('name', name).append('project',encodeURI(project))
       };
-      const deleteConnection$ = this.httpClient.delete<any>('http://localhost:3000/connections/deleteNodeConnections/', options).pipe(take(1)).subscribe((_result) => {
+      const deleteConnection$ = this.httpClient.delete<any>(`${environment.url}/connections/deleteNodeConnections/`, options).pipe(take(1)).subscribe((_result) => {
         deleteConnection$.unsubscribe();
         accept(name);
       },
@@ -28,7 +29,7 @@ export class NodeConnectionsService {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
         params: new HttpParams().append('project',encodeURI(localStorage.getItem('project')!))
       };
-      let sub$ = this.httpClient.put<{ status: string }>('http://localhost:3000/connections/editName/', { name: name,newName:newName }).subscribe(response => {
+      let sub$ = this.httpClient.put<{ status: string }>(`${environment.url}/connections/editName/`, { name: name,newName:newName }).subscribe(response => {
         console.log('response status',response.status)
         if (response.status === 'OK') {
           accept(true);
@@ -48,7 +49,7 @@ export class NodeConnectionsService {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
         params: new HttpParams().append('project',encodeURI(localStorage.getItem('project')!))
       };
-      let subs$ = this.httpClient.get<NodeConnections[]>('http://localhost:3000/connections/listAll/',
+      let subs$ = this.httpClient.get<NodeConnections[]>(`${environment.url}/connections/listAll/`,
         options).pipe(take(1)).subscribe((response: NodeConnections[]) => {
           subs$.unsubscribe();
           accept(response)

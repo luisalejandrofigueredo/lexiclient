@@ -5,6 +5,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Language } from '../interfaces/language';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-add-language',
@@ -17,7 +18,7 @@ export class AddLanguageComponent implements OnInit {
     chain: new FormControl<string>('', Validators.required),
     isRegularExpression: new FormControl<boolean>(false, Validators.required),
   });
-  url = 'http://localhost:3000/language/add';
+  url =`${environment.url}/language/add`;
   options = { headers: new HttpHeaders({ 'content-type': 'application/json' }) };
   constructor(private matSnackBar: MatSnackBar, private httpClient: HttpClient, public dialogRef: MatDialogRef<AddLanguageComponent>, @Inject(MAT_DIALOG_DATA) public data: { action: string; record: Language}) { }
 
@@ -41,7 +42,7 @@ export class AddLanguageComponent implements OnInit {
         chain: this.languageForm.controls.chain.value,
         isRegularExpression: this.languageForm.controls.isRegularExpression.value
       };
-      this.httpClient.put<any>('http://localhost:3000/language/edit', body, this.options).subscribe(response => {
+      this.httpClient.put<any>(`${environment.url}/language/edit`, body, this.options).subscribe(response => {
         if (response.status !== 'Duplicate language') {
           let snack = this.matSnackBar.open('Language edited', '', { duration: 3000 });
         } else {

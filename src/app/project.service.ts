@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { take } from 'rxjs';
-import {Project} from './interfaces/project'
+import {Project} from './interfaces/project';
+import { environment } from '../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
@@ -11,7 +12,7 @@ export class ProjectService {
   projectAdd(project: Project): Promise<Node | boolean> {
     return new Promise((accept, reject) => {
       const options = { headers: new HttpHeaders({ 'content-type': 'application/json' }) };
-      const url = 'http://localhost:3000/project/add';
+      const url = `${environment.url}/project/add`;
       this.httpClient.post<any>(url, project, options).pipe(take(1)).subscribe(response => {
         if (response.status !== 'duplicate project') {
           accept(response)
@@ -29,7 +30,7 @@ export class ProjectService {
         headers: new HttpHeaders({ 'content-type': 'application/json' }),
         params: new HttpParams().append('id', encodeURI(id))
       };
-      const url = 'http://localhost:3000/project/getOne';
+      const url = `${environment.url}/project/getOne`;
       let sub$ = this.httpClient.get<Project>(url, options).pipe(take(1)).subscribe(response => {
         sub$.unsubscribe();
         resolve(response)
@@ -44,7 +45,7 @@ export class ProjectService {
   getAll(): Promise<Project[]> {
     return new Promise((resolve, reject) => {
       const options = { headers: new HttpHeaders({ 'content-type': 'application/json' }) };
-      const url = 'http://localhost:3000/project/ListAll/';
+      const url = `${environment.url}/project/ListAll/`;
       let sub$ = this.httpClient.get<Project[]>(url, options).pipe(take(1)).subscribe(response => {
         sub$.unsubscribe();
         resolve(response)
@@ -60,7 +61,7 @@ export class ProjectService {
       const options = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       };
-      let subs$ = this.httpClient.put<any>('http://localhost:3000/project/edit/', project, options).subscribe((response) => {
+      let subs$ = this.httpClient.put<any>(`${environment.url}/project/edit/`, project, options).subscribe((response) => {
       if (response.status !== 'duplicate project') {
         subs$.unsubscribe();
         accept(true);

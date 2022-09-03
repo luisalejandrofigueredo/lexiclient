@@ -8,6 +8,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { AddLanguageComponent } from '../add-language/add-language.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-view-language',
@@ -27,7 +28,7 @@ export class ViewLanguageComponent implements OnInit {
   constructor(private matSnackBar: MatSnackBar,private matDialog: MatDialog, private httpCLient: HttpClient, public dialogRef: MatDialogRef<ViewLanguageComponent>) { }
 
   ngOnInit(): void {
-    let subs$ = this.httpCLient.get<Language[]>('http://localhost:3000/language/listAll/',
+    let subs$ = this.httpCLient.get<Language[]>(`${environment.url}/language/listAll/`,
       this.options).subscribe((listSubscribe: any) => {
         this.DataSource = new MatTableDataSource(listSubscribe);
         this.DataSource.paginator = this.paginator;
@@ -43,7 +44,7 @@ export class ViewLanguageComponent implements OnInit {
     const elementRef = this.matDialog.open(AddLanguageComponent);
     elementRef.afterClosed().subscribe((result) => {
       if (result === 'Add') {
-        let subs$ = this.httpCLient.get<Language[]>('http://localhost:3000/language/listAll/',
+        let subs$ = this.httpCLient.get<Language[]>(`${environment.url}/language/listAll/`,
           this.options).subscribe((listSubscribe: any) => {
             this.DataSource = new MatTableDataSource(listSubscribe);
             this.DataSource.paginator = this.paginator;
@@ -58,14 +59,14 @@ export class ViewLanguageComponent implements OnInit {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       params: new HttpParams().append('id', encodeURI(id))
     };
-    let subs$ = this.httpCLient.get<any>('http://localhost:3000/language/getOne/',
+    let subs$ = this.httpCLient.get<any>(`${environment.url}/language/getOne/`,
       options).subscribe((recordLanguage: any) => {
         if (!recordLanguage.status) {
           const elementRef = this.matDialog.open(AddLanguageComponent, { data: { action: 'edit', record: recordLanguage } });
           elementRef.afterClosed().subscribe(result => {
             console.log('result',result)
             if (result === 'edit') {
-              let subs$ = this.httpCLient.get<Language[]>('http://localhost:3000/language/listAll/',
+              let subs$ = this.httpCLient.get<Language[]>(`${environment.url}/language/listAll/`,
                 this.options).subscribe((listSubscribe: any) => {
                   this.DataSource = new MatTableDataSource(listSubscribe);
                   this.DataSource.paginator = this.paginator;
