@@ -8,7 +8,7 @@
       <a mat-list-item [routerLink]="['viewProjects']">View Project</a>
       <a mat-list-item [routerLink]="['viewNodes']">View nodes</a>
       <a mat-list-item [routerLink]="['viewNodeConnections']">View nodes with connections</a>
-      <a mat-list-item [routerLink]="['viewConnections']">View connections</a>
+      <!--<a mat-list-item [routerLink]="['viewConnections']">View connections</a>-->
       <a mat-list-item [routerLink]="['deleteAllNodes']">Delete all nodes</a>
       <a mat-list-item [routerLink]="['deleteAllConnections']">Delete all connections</a>
     </mat-nav-list>
@@ -25,12 +25,6 @@
       </button>
       <span>Vimana Non-deterministic finite automata system</span>
     </mat-toolbar>
-    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="gappx">
-      <img width="50%" src="assets/cabra.png" alt="">
-  </div>
-  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
-    <p>Developer:Luis Alejandro Figueredo Casadei</p>
-  </div>
     <!-- Add Content Here -->
     <router-outlet></router-outlet>
   </mat-sidenav-content>

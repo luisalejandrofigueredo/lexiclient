@@ -12,6 +12,7 @@ import { ViewNodeConnectionsComponent } from './view-node-connections/view-node-
 import { NewProjectComponent } from './new-project/new-project.component';
 import { ViewProjectsComponent } from './view-projects/view-projects.component';
 import { ProjectEditComponent } from './project-edit/project-edit.component';
+import { MainPageComponent } from '../app/main-page/main-page.component';
 const routes: Routes = [
   { path: 'newNode', component: NodenewComponent },
   { path: 'viewNodes', component: ViewnodesComponent },
@@ -24,7 +25,8 @@ const routes: Routes = [
   { path: 'viewNodeConnections', component: ViewNodeConnectionsComponent },
   { path: 'newProject', component: NewProjectComponent },
   { path: 'viewProjects', component: ViewProjectsComponent },
-  { path: 'projectEdit/:id', component: ProjectEditComponent }
+  { path: 'projectEdit/:id', component: ProjectEditComponent },
+  {path:'' ,component:MainPageComponent}
 ];
 
 @NgModule({
