@@ -10,7 +10,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -39,6 +39,7 @@ import { NewProjectComponent } from './new-project/new-project.component';
 import { ViewProjectsComponent } from './view-projects/view-projects.component';
 import { ProjectEditComponent } from './project-edit/project-edit.component';
 import { MainPageComponent } from './main-page/main-page.component';
+import { RunMachineComponent } from './run-machine/run-machine.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,7 +58,8 @@ import { MainPageComponent } from './main-page/main-page.component';
     NewProjectComponent,
     ViewProjectsComponent,
     ProjectEditComponent,
-    MainPageComponent
+    MainPageComponent,
+    RunMachineComponent
   ],
   imports: [
     BrowserModule,

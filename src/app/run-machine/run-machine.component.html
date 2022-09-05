@@ -1,0 +1,9 @@
+<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="gappx">
+  <p>Run your machine {{nodesTracking}} </p>
+  <button color="accent" (click)="click()" mat-raised-button>Run</button>
+  <form [formGroup]="nodeForm" >
+    <mat-form-field [class.cdk-visually-hidden]="viewMachineRun">
+      <textarea formControlName="viewMachine" matInput placeholder="Machine" cols="30" rows="10"></textarea>
+    </mat-form-field>
+  </form>
+</div>

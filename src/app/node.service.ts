@@ -10,6 +10,28 @@ import { environment } from '../environments/environment';
 export class NodeService {
   constructor(private httpClient: HttpClient) {
   }
+
+  getOneByName(project: string, name: string): Promise<Node | boolean> {
+    return new Promise((resolve, reject) => {
+      const options = {
+        headers: new HttpHeaders({ 'content-type': 'application/json' }),
+        params: new HttpParams().append('project', encodeURI(project)).append('name', encodeURI(name))
+      };
+      const url = `${environment.url}/node/getOne`;
+      let sub$ = this.httpClient.get<Node>(url, options).pipe(take(1)).subscribe(response => {
+        sub$.unsubscribe();
+        if (response.name === name) {
+          resolve(response)
+        } else {
+          reject(false);
+        }
+      }, (error) => {
+        sub$.unsubscribe();
+        reject(false);
+      });
+    });
+  }
+
   //Get one node by name
   getOne(project: string, name: string): Promise<Node | boolean> {
     return new Promise((resolve, reject) => {
