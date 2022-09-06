@@ -32,7 +32,7 @@ export class ProjectEditComponent implements OnInit {
     });
   }
   async submit() {
-    await this.projectService.projectEdit({ _id: this._id, projectName: this.formProject.controls.name.value, description: this.formProject.controls.description.value },this.oldProject).then((resolve) => { this.matSnackBar.open('Project updated', 'Update action', { duration: 3000 }) }).catch((reject) => { this.matSnackBar.open('Project not updated fail', 'Update action', { duration: 3000 }) });
+    await this.projectService.projectEdit({ _id: this._id, projectName: this.formProject.controls.name.value, description: this.formProject.controls.description.value },this.oldProject).then((resolve) => { this.matSnackBar.open('Project updated', 'Update action', { duration: 3000 }) localStorage.setItem('project',this.formProject.controls.name.value) }).catch((reject) => { this.matSnackBar.open('Project not updated fail', 'Update action', { duration: 3000 }) });
     this.router.navigate(['viewProjects']);
   }
 
