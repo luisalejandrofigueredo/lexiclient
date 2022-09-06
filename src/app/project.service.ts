@@ -56,12 +56,13 @@ export class ProjectService {
     });
   }
 
-  projectEdit(project: Project): Promise<boolean> {
+  projectEdit(project: Project,oldProject:string): Promise<boolean> {
     return new Promise((accept, reject) => {
       const options = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       };
-      let subs$ = this.httpClient.put<any>(`${environment.url}/project/edit/`, project, options).subscribe((response) => {
+      const putObject={project:project , oldProject:oldProject }
+      let subs$ = this.httpClient.put<any>(`${environment.url}/project/edit/`, putObject, options).subscribe((response) => {
       if (response.status !== 'duplicate project') {
         subs$.unsubscribe();
         accept(true);
