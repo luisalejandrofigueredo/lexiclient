@@ -10,17 +10,18 @@ import { ProjectService } from '../project.service';
   styleUrls: ['./project-edit.component.scss']
 })
 export class ProjectEditComponent implements OnInit {
-  _id!:string;
+  _id!: string;
   formProject = new FormGroup({
     name: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
     description: new FormControl<string>('', { nonNullable: true }),
   });
+  initialValues = this.formProject
   constructor(private route: ActivatedRoute, private projectService: ProjectService, private matSnackBar: MatSnackBar, private router: Router) { }
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.projectService.getOne(params['id']).then(resolve => {
-        this._id=params['id'];
+        this._id = params['id'];
         if (typeof resolve !== 'boolean') {
           this.formProject.controls.name.setValue(resolve.projectName);
           this.formProject.controls.description.setValue(resolve.description);
@@ -28,10 +29,11 @@ export class ProjectEditComponent implements OnInit {
       });
     });
   }
-  submit() {
-    this.projectService.projectEdit({ _id:this._id,projectName: this.formProject.controls.name.value, description: this.formProject.controls.description.value }).then((resolve)=>{this.matSnackBar.open('Project updated','Update action',{duration:3000})}).catch((reject)=>{this.matSnackBar.open('Project not updated  ','Update action',{duration:3000})});
+  async submit() {
+    await this.projectService.projectEdit({ _id: this._id, projectName: this.formProject.controls.name.value, description: this.formProject.controls.description.value }).then((resolve) => { this.matSnackBar.open('Project updated', 'Update action', { duration: 3000 }) }).catch((reject) => { this.matSnackBar.open('Project not updated fail', 'Update action', { duration: 3000 }) });
     this.router.navigate(['viewProjects']);
   }
+
 
   cancel() {
     this.router.navigate(['viewProjects']);

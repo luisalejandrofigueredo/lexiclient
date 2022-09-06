@@ -5,6 +5,6 @@
     <mat-checkbox formControlName="final">Final</mat-checkbox>
     <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
       <button color="primary" mat-raised-button type="button" (click)="cancel()">Cancel</button>
-      <button color="primary" mat-raised-button type="submit">Accept</button>
+      <button color="primary" [disabled]="!(this.nodeForm.valid && this.nodeForm.dirty)"mat-raised-button type="submit">Accept</button>
     </div>
   </form>
