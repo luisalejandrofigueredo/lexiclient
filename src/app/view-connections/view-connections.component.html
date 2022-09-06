@@ -1,3 +1,4 @@
+<p><span class="project">Project:</span>{{this.project}}</p>
 <p style="text-align:center; font-size: 2em;color: aliceblue;background-color: blue;">Connections nodes list</p>
 <button mat-icon-button (click)="add()">
   <mat-icon>add</mat-icon>
@@ -28,7 +29,7 @@
     <ng-container matColumnDef="isLanguage">
       <th mat-header-cell *matHeaderCellDef><span style="padding-left: 10px;font-size: 2em"> is language </span></th>
       <td mat-cell *matCellDef="let row">
-        <mat-checkbox disabled="true" [checked]="row.isRegularExpression"></mat-checkbox>
+        <mat-checkbox disabled="true" [checked]="row.isLanguage"></mat-checkbox>
       </td>
     </ng-container>
     <ng-container matColumnDef="delete">

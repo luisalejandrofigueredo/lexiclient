@@ -15,7 +15,9 @@ export class NavigatorComponent {
       map(result => result.matches),
       shareReplay()
     );
-
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  project!: string;
+  constructor(private breakpointObserver: BreakpointObserver) {
+    this.project=localStorage.getItem('project')!
+  }
 
 }

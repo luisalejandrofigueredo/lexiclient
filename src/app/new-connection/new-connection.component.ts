@@ -70,6 +70,7 @@ export class NewConnectionComponent implements OnInit {
       if (retLanguage) {
         this.connectionForm.controls.character.setValue(retLanguage.name);
         this.connectionForm.controls.isRegularExpression.setValue(retLanguage.isRegularExpression);
+        this.connectionForm.controls.character.markAsDirty();
       }
     });
   }

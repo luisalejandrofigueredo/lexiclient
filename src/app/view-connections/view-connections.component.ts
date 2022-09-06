@@ -24,9 +24,11 @@ export class ViewConnectionsComponent implements OnInit {
   pageSizeOptions: number[] = [10, 25, 100];
   header = new HttpHeaders
   params: parPage = { skip: 0, limit: 10 };
+  project:string=''
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   constructor(private nodeService: NodeService, private nodeConnectionService: NodeConnectionsService, private dialog: MatDialog, private httpCLient: HttpClient, private matSnackBar: MatSnackBar, private router: Router) { }
   ngOnInit(): void {
+   this.project=localStorage.getItem('project')!;
    this.getAll();
   }
 

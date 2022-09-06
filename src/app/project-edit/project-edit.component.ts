@@ -26,7 +26,7 @@ export class ProjectEditComponent implements OnInit {
         if (typeof resolve !== 'boolean') {
           this.formProject.controls.name.setValue(resolve.projectName);
           this.formProject.controls.description.setValue(resolve.description);
-          this.oldProject = this.formProject.controls.description.value;
+          this.oldProject = this.formProject.controls.name.value;
         }
       });
     });
