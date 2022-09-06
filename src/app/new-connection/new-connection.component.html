@@ -40,7 +40,7 @@
     </div>
     <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
       <button color="primary" mat-raised-button type="button" (click)="cancel()">Cancel</button>
-      <button color="primary" mat-raised-button type="submit" [disabled]="!this.connectionForm.valid">Accept</button>
+      <button color="primary" mat-raised-button type="submit" [disabled]="!(this.connectionForm.valid && this.connectionForm.dirty)">Accept</button>
     </div>
   </div>
 </form>
