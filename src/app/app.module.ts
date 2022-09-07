@@ -40,6 +40,7 @@ import { ViewProjectsComponent } from './view-projects/view-projects.component';
 import { ProjectEditComponent } from './project-edit/project-edit.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { RunMachineComponent } from './run-machine/run-machine.component';
+import { CopyProjectComponent } from './copy-project/copy-project.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -59,7 +60,8 @@ import { RunMachineComponent } from './run-machine/run-machine.component';
     ViewProjectsComponent,
     ProjectEditComponent,
     MainPageComponent,
-    RunMachineComponent
+    RunMachineComponent,
+    CopyProjectComponent
   ],
   imports: [
     BrowserModule,

@@ -1,14 +1,14 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { take } from 'rxjs';
-import {Project} from './interfaces/project';
+import { Project } from './interfaces/project';
 import { environment } from '../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectService {
 
-  constructor(private httpClient:HttpClient) { }
+  constructor(private httpClient: HttpClient) { }
   projectAdd(project: Project): Promise<Node | boolean> {
     return new Promise((accept, reject) => {
       const options = { headers: new HttpHeaders({ 'content-type': 'application/json' }) };
@@ -56,23 +56,39 @@ export class ProjectService {
     });
   }
 
-  projectEdit(project: Project,oldProject:string): Promise<boolean> {
+  projectEdit(project: Project, oldProject: string): Promise<boolean> {
     return new Promise((accept, reject) => {
       const options = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       };
-      const putObject={project:project , oldProject:oldProject }
+      const putObject = { project: project, oldProject: oldProject }
       let subs$ = this.httpClient.put<any>(`${environment.url}/project/edit/`, putObject, options).subscribe((response) => {
-      if (response.status !== 'duplicate project') {
-        subs$.unsubscribe();
-        accept(true);
-      } else {
-        subs$.unsubscribe();
-        reject(false);
-      }
-    }, (error) => { subs$.unsubscribe();console.error('Error', error) });
+        if (response.status !== 'duplicate project') {
+          subs$.unsubscribe();
+          accept(true);
+        } else {
+          subs$.unsubscribe();
+          reject(false);
+        }
+      }, (error) => { subs$.unsubscribe(); console.error('Error', error) });
     });
   }
 
+  projectDelete(id:string,projectName:string): Promise<boolean> {
+    return new Promise((accept, reject) => {
+      const options = {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+        params: new HttpParams().append('projectName', encodeURI(projectName)).append('id',encodeURI(id))
+      };
+      let subs$ = this.httpClient.delete<any>(`${environment.url}/project/delete`,options).subscribe((response) => {
+        if (response.status !== 'Error on delete project') {
+          subs$.unsubscribe();
+          accept(true);
+        } else {
+          subs$.unsubscribe();
+          reject(false);
+        }
+      }, (error) => { subs$.unsubscribe(); console.error('Error', error) });
+    });
+  }
 }
-
