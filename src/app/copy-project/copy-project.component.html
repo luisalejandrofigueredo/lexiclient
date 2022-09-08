@@ -9,7 +9,7 @@
     </div>
     <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
       <button color="primary" mat-raised-button type="button" (click)="cancel()">Cancel</button>
-      <button color="primary" [disabled]="!this.formProject.valid" mat-raised-button type="submit">Accept</button>
+      <button color="primary" [disabled]="!(this.formProject.valid && !this.formProject.controls.name.pristine)" mat-raised-button type="submit">Accept</button>
     </div>
   </form>
   
