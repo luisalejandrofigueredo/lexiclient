@@ -28,6 +28,10 @@ export class RunMachineComponent implements OnInit {
     this.nodeService.getOneByName(localStorage.getItem('project')!, 'Start').then((accept) => {
       console.log('accept', accept);
       this.snackBar.open('Start ', 'Message', { duration: 5000 });
-    }).catch((reject) => { this.snackBar.open('Not found fist node add node name Start', 'Error', { duration: 5000 }) });
+    }).catch((reject) => {
+      this.nodesTracking = 'Start not found';
+      this.nodeForm.controls.viewMachine.setValue(this.nodesTracking, { emitEvent: true });
+      this.snackBar.open('Not found fist node add node name Start', 'Error', { duration: 5000 })
+    });
   }
 }

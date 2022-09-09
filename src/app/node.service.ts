@@ -77,7 +77,6 @@ export class NodeService {
         if (response.status !== 'duplicate node') {
           accept(response)
         } else {
-          console.log('node Reponse',response);
           reject(false);
         }
       });
