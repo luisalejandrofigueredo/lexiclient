@@ -11,12 +11,14 @@ import { NodeService } from '../node.service';
 export class RunMachineComponent implements OnInit {
   viewMachineRun = true;
   nodesTracking=''
+  machine!:string;
   nodeForm = new FormGroup({
     viewMachine: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
   });
   constructor(private nodeService:NodeService,private snackBar:MatSnackBar) { }
 
   ngOnInit(): void {
+    this.machine=localStorage.getItem('project')!;
   }
 
   click() {
@@ -27,5 +29,4 @@ export class RunMachineComponent implements OnInit {
       this.snackBar.open('Start','Message');
     }).catch((reject)=>{ this.snackBar.open('Not found fist node add node name Start','Error')});
   }
-
 }
