@@ -1,8 +1,9 @@
 
 <p style="text-align:center; font-size: 2em;color: aliceblue;background-color: blue;">Connections nodes list</p>
-<button mat-icon-button (click)="add()">
+<button mat-icon-button matTooltip="Add connection" (click)="add()">
   <mat-icon>add</mat-icon>
 </button>
+<button mat-icon-button matTooltip="Goto project" (click)="gotoProjects()" ><mat-icon>display_settings</mat-icon></button>
 <button mat-icon-button (click)="viewRegExp()">
   <mat-icon>help</mat-icon>
 </button>
@@ -57,4 +58,3 @@
     <mat-paginator [pageSizeOptions]="pageSizeOptions" aria-label="Select page"></mat-paginator>
   </div>
 </div>
-<button mat-icon-button (click)="gotoProjects()" ><mat-icon>display_settings</mat-icon></button>

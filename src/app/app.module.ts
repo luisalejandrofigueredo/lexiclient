@@ -41,6 +41,7 @@ import { ProjectEditComponent } from './project-edit/project-edit.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { RunMachineComponent } from './run-machine/run-machine.component';
 import { CopyProjectComponent } from './copy-project/copy-project.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
 @NgModule({
   declarations: [
     AppComponent,
@@ -82,6 +83,7 @@ import { CopyProjectComponent } from './copy-project/copy-project.component';
     MatCheckboxModule,
     MatAutocompleteModule,
     MatDialogModule,
+    MatTooltipModule,
     FlexLayoutModule,
     YesNoComponent,
     ServiceWorkerModule.register('ngsw-worker.js', {

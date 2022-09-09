@@ -1,6 +1,7 @@
 
 <p style="text-align:center; font-size: 2em;color: aliceblue;background-color: blue;">Nodes list</p>
-<button mat-icon-button (click)="gotoAdd()"><mat-icon>add</mat-icon></button>
+<button mat-icon-button matTooltip="Add node" (click)="gotoAdd()"><mat-icon>add</mat-icon></button>
+<button mat-icon-button  matTooltip="Goto project" (click)="gotoProjects()" ><mat-icon>display_settings</mat-icon></button>
 <div  fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="gappx">
   <table mat-table #table [dataSource]="DataSource">
     <ng-container matColumnDef="name">
@@ -27,4 +28,3 @@
     <mat-paginator  [pageSizeOptions]="pageSizeOptions"  (page)="pageEvent($event)" aria-label="Select page" ></mat-paginator>
   </div>
 </div>
-<button mat-icon-button (click)="gotoProjects()" ><mat-icon>display_settings</mat-icon></button>
