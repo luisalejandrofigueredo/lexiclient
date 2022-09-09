@@ -19,10 +19,11 @@ export class NodeService {
       };
       const url = `${environment.url}/node/getOne`;
       let sub$ = this.httpClient.get<Node>(url, options).pipe(take(1)).subscribe(response => {
-        sub$.unsubscribe();
         if (response.name === name) {
+          sub$.unsubscribe();
           resolve(response)
         } else {
+          sub$.unsubscribe();
           reject(false);
         }
       }, (error) => {
