@@ -89,7 +89,7 @@ export class CopyProjectComponent implements OnInit {
               let snack = this.matSnackBar.open('Error', error, { duration: 3000 });
             });
           });
-          this.router.navigate(['/viewConnections']);
+          this.router.navigate(['/viewProjects']);
         }
       }).catch((_error) => {
 
