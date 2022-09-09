@@ -71,10 +71,12 @@ export class NodeService {
     return new Promise((accept, reject) => {
       const options = { headers: new HttpHeaders({ 'content-type': 'application/json' }) };
       const url = `${environment.url}/node/add`;
+      console.log('node',node);
       this.httpClient.post<any>(url, node, options).pipe(take(1)).subscribe(response => {
         if (response.status !== 'duplicate node') {
           accept(response)
         } else {
+          console.log('node Reponse',response);
           reject(false);
         }
       });
@@ -105,7 +107,7 @@ export class NodeService {
         .append("_idNodeConnection", encodeURI(connectionId))
     };
     return new Promise((accept, reject) => {
-      const subDelete$ = this.httpClient.delete(`${environment.url}/node/deleteOneConnection`, options).subscribe((response) => {
+      const subDelete$ = this.httpClient.delete(`${environment.url}/node/deleteOneConnection`, options).subscribe((_response) => {
         subDelete$.unsubscribe();
         accept(true);
       }, (error) => {
@@ -130,5 +132,41 @@ export class NodeService {
         }
       }, (error) => { subs$.unsubscribe(); console.error('Error', error) });
     });
+  }
+
+  copyNodes(project: string, copyProject: string): Promise<Node[] | boolean> {
+    return new Promise((accept, reject) => {
+      const options = {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+        params: new HttpParams().append('project', encodeURI(project))
+      };
+      let subs$ = this.httpClient.get<Node[]>(`${environment.url}/node/getNodesProject`,
+        options).subscribe(async (response: Node[]) => {
+          console.log(`${environment.url}/nodes/getNodesProject`, response)
+          console.log('Copy project',copyProject)
+          await this.addNodes(copyProject, response);
+          subs$.unsubscribe();
+          accept(response)
+        }, (error) => {
+          subs$.unsubscribe();
+          reject(false)
+        });
+    });
+  }
+
+  addNodes(project: string, nodes: Node[]): Promise<boolean> {
+    return new Promise((accept, reject) => {
+      try {
+        nodes.forEach(async element => {
+          console.log('adding element:&s , project', element,project)
+          await this.nodeAdd({ project: project, name: element.name, final: element.final }).then((response) => {
+            console.log('add response', response)
+          }).catch((error=>{console.log('add response', error),reject(false)}));
+        })
+        accept(true);
+      } catch (error) {
+        reject(false);
+      }
+    })
   }
 }
