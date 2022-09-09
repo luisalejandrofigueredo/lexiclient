@@ -50,6 +50,7 @@ export class NodeService {
       });
     });
   }
+
   //Get all nodes
   getAll(project: string): Promise<Node[] | boolean> {
     return new Promise((resolve, reject) => {
@@ -67,7 +68,7 @@ export class NodeService {
       });
     });
   }
-
+//nodeAdd
   nodeAdd(node: Node): Promise<Node | boolean> {
     return new Promise((accept, reject) => {
       const options = { headers: new HttpHeaders({ 'content-type': 'application/json' }) };
@@ -82,7 +83,7 @@ export class NodeService {
       });
     });
   }
-
+//node delete
   nodeDelete(id: string): Promise<string | boolean> {
     return new Promise((resolve, reject) => {
       const options = {
@@ -99,6 +100,7 @@ export class NodeService {
       }, (error) => { reject(false); });
     });
   }
+  
   //Delete one connection and array of connections in Node
   deleteOneConnection(nodeId: string, connectionId: string): Promise<boolean> {
     const options = {
