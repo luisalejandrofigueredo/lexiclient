@@ -90,4 +90,8 @@ export class ViewnodesComponent implements OnInit, AfterViewInit {
       subs$.unsubscribe();
       });
   }
+
+  gotoProjects(){
+    this.router.navigate(['viewProjects']);
+  }
 }

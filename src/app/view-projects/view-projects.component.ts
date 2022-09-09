@@ -55,13 +55,24 @@ export class ViewProjectsComponent implements OnInit {
         await this.projectService.projectDelete(id, projectName).then(async (accept) => {
           this.matSnackBar.open(`Project deleted ${projectName}`, 'Delete')
           await this.getData();
-        }).catch((error)=>{this.matSnackBar.open(`Project not deleted ${projectName}`, 'Error')})
+        }).catch((error) => { this.matSnackBar.open(`Project not deleted ${projectName}`, 'Error') })
       }
     }
     )
   }
-  async projectCopy(id:string){
-    await this.router.navigate(['contentCopy',id]);
+
+  async projectNodes(id: string, projectName: string) {
+      localStorage.setItem('project', projectName);
+      await this.router.navigate(['viewNodes']);
+  }
+
+  async projectConnections(id:string,projectName:string){
+      localStorage.setItem('project', projectName);
+      await this.router.navigate(['viewConnections']);
+  }
+
+  async projectCopy(id: string) {
+    await this.router.navigate(['contentCopy', id]);
   }
   selectProject(projectName: string) {
     localStorage.setItem('project', projectName);

@@ -5,10 +5,10 @@
       [opened]="(isHandset$ | async) === false">
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item [routerLink]="['viewProjects']">View projects</a>
-      <a mat-list-item [routerLink]="['viewNodes']">View nodes</a>
-      <!--<a mat-list-item [routerLink]="['viewNodeConnections']">View nodes with connections</a>-->
-      <a mat-list-item [routerLink]="['viewConnections']">View connections</a>
+      <a mat-list-item [routerLink]="['viewProjects']"><mat-icon class="icon">display_settings</mat-icon>View projects</a>
+      <a mat-list-item [routerLink]="['viewNodes']"><mat-icon class="icon">article</mat-icon>View nodes</a>
+     <!-- <a mat-list-item [routerLink]="['viewNodeConnections']">View nodes with connections</a> -->
+      <a mat-list-item [routerLink]="['viewConnections']"><mat-icon class="icon">compare_arrows</mat-icon>View connections</a>
       <a mat-list-item [routerLink]="['deleteAllNodes']">Delete all nodes</a>
       <a mat-list-item [routerLink]="['deleteAllConnections']">Delete all connections</a>
       <a mat-list-item [routerLink]="['runMachine']">Run Machine</a>

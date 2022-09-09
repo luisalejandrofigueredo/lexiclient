@@ -32,6 +32,9 @@ export class ViewConnectionsComponent implements OnInit {
    this.getAll();
   }
 
+  gotoProjects(){
+    this.router.navigate(['viewProjects']);
+  }
   async getAll(){
     let proGetAll$ = await this.nodeConnectionService.listAll().then(response => {
       if (typeof response !== 'boolean') this.DataSource = new MatTableDataSource(response);
