@@ -5,7 +5,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Project } from '../interfaces/project';
 import { ProjectService } from "../project.service";
 import { NodeService } from "../node.service";
-import {NodeConnectionsService} from '../node-connections.service'
+import { NodeConnectionsService } from '../node-connections.service'
+import { environment } from '../../environments/environment';
+import { NodeConnections } from '../interfaces/node-connections';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Node } from "../interfaces/node";
+
 @Component({
   selector: 'app-copy-project',
   templateUrl: './copy-project.component.html',
@@ -18,7 +23,8 @@ export class CopyProjectComponent implements OnInit {
   });
   id!: string;
   oldName!: string;
-  constructor(private nodeConnectionService:NodeConnectionsService,private nodeService: NodeService, private matSnackBar: MatSnackBar, private projectService: ProjectService, private route: ActivatedRoute, private router: Router) { }
+  url = `${environment.url}/connections/add`;
+  constructor(private httpClient: HttpClient, private nodeConnectionService: NodeConnectionsService, private nodeService: NodeService, private matSnackBar: MatSnackBar, private projectService: ProjectService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -62,8 +68,61 @@ export class CopyProjectComponent implements OnInit {
   }
 
   async addConnections(project: string, copyProject: string): Promise<boolean> {
-    return new Promise((accept, reject) => {
-      await  this.nodeConnectionService.updateConnectionName
+    const options = { headers: new HttpHeaders({ 'content-type': 'application/json' }) };
+    let body: NodeConnections;
+    return new Promise(async (accept, reject) => {
+      await this.nodeConnectionService.listAllProject(project).then((resolve) => {
+        if (typeof resolve !== 'boolean') {
+          resolve.forEach(element => {
+            body = { project: copyProject, isLanguage: element.isLanguage, name: element.name, toName: element.toName, character: element.character, isRegularExpression: element.isRegularExpression }
+            let sub$ = this.httpClient.post<NodeConnections | { status: string }>(this.url, body, options).subscribe(async response => {
+              console.log('response', response)
+              if ((<{ status: string }>response).status !== 'duplicate node' && (<{ status: string }>response).status !== 'add connection to node failed') {
+                await this.pushElementToNode((<NodeConnections>response)._id!, copyProject, (<NodeConnections>response).name)
+                let snack = this.matSnackBar.open('Connection created', '', { duration: 3000 });
+                sub$.unsubscribe();
+              } else {
+                let snack = this.matSnackBar.open('Duplicate connection', '', { duration: 3000 });
+                sub$.unsubscribe();
+              }
+            }, error => {
+              let snack = this.matSnackBar.open('Error', error, { duration: 3000 });
+            });
+          });
+          this.router.navigate(['/viewConnections']);
+        }
+      }).catch((_error) => {
+
+      });
+    });
+  }
+
+  async pushElementToNode(connectionId: string, project: string, name: string): Promise<boolean> {
+    const url = `${environment.url}/node/getOne`;
+    const options = {
+      headers: new HttpHeaders({ 'content-type': 'application/json' }),
+      params: new HttpParams().append('name', encodeURI(name)).append('project', project)
+    };
+    return new Promise<boolean>((resolve, reject) => {
+      try {
+        let sub$ = this.httpClient.get<Node>(url, options).subscribe(resNode => {
+          const optionsConnection = {
+            headers: new HttpHeaders({ 'content-type': 'application/json' }),
+            params: new HttpParams().append('idNodeConnection', encodeURI(connectionId !== undefined ? connectionId : ''))
+              .append('idNode', encodeURI(resNode._id !== undefined ? resNode._id : '0')).append('project', localStorage.getItem('project')!)
+          };
+          let subPost$ = this.httpClient.post<any>(`${environment.url}/node/addConnection/`, '', optionsConnection).subscribe((response) => {
+            if (response === null || 'status' in response) {
+              this.matSnackBar.open('Connection failed', '', { duration: 3000 });
+            }
+            subPost$.unsubscribe();
+          });
+          sub$.unsubscribe();
+          resolve(true);
+        }, (error) => { console.error('Error', error); reject(false) });
+      } catch (error) {
+
+      }
     });
   }
 

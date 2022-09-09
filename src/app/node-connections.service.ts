@@ -59,4 +59,21 @@ export class NodeConnectionsService {
         });
     })
   }
+
+  listAllProject(project:string): Promise<NodeConnections[] | boolean> {
+    return new Promise((accept, reject) => {
+      const options = {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+        params: new HttpParams().append('project',encodeURI(project))
+      };
+      let subs$ = this.httpClient.get<NodeConnections[]>(`${environment.url}/connections/listAll/`,
+        options).pipe(take(1)).subscribe((response: NodeConnections[]) => {
+          subs$.unsubscribe();
+          accept(response)
+        }, (error) => {
+          subs$.unsubscribe();
+          reject(false)
+        });
+    })
+  }
 }
