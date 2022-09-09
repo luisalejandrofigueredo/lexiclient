@@ -1,4 +1,4 @@
-<p><span class="project">Project:</span>{{this.project}}</p>
+
 <p style="text-align:center; font-size: 2em;color: aliceblue;background-color: blue;">Connections nodes list</p>
 <button mat-icon-button (click)="add()">
   <mat-icon>add</mat-icon>
@@ -52,5 +52,8 @@
     <tr mat-row *matRowDef="let row; columns: ['Node','toNode','Character','regularExpression','isLanguage','edit','delete'];">
     </tr>
   </table>
-  <mat-paginator [pageSizeOptions]="pageSizeOptions" aria-label="Select page"></mat-paginator>
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
+    <span class="project">{{this.project}}</span>
+    <mat-paginator [pageSizeOptions]="pageSizeOptions" aria-label="Select page"></mat-paginator>
+  </div>
 </div>

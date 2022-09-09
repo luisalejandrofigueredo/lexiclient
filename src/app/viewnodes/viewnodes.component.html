@@ -1,4 +1,4 @@
-<p><span class="project">Project:</span>{{this.project}}</p>
+
 <p style="text-align:center; font-size: 2em;color: aliceblue;background-color: blue;">Nodes list</p>
 <button mat-icon-button (click)="gotoAdd()"><mat-icon>add</mat-icon></button>
 <div  fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="gappx">
@@ -22,5 +22,8 @@
     <tr mat-header-row *matHeaderRowDef="['name','final','edit','delete']"></tr>
     <tr mat-row *matRowDef="let row; columns: ['name','final','edit','delete'];"></tr>
   </table>
-  <mat-paginator  [pageSizeOptions]="pageSizeOptions"  (page)="pageEvent($event)" aria-label="Select page" ></mat-paginator>
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
+    <span class="project">{{this.project}}</span>
+    <mat-paginator  [pageSizeOptions]="pageSizeOptions"  (page)="pageEvent($event)" aria-label="Select page" ></mat-paginator>
+  </div>
 </div>
