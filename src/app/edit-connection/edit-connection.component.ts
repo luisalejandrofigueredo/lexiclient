@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Node } from '../interfaces/node';
 import {NodeConnections} from '../interfaces/node-connections';
+import { environment } from "../../environments/environment";
 
 @Component({
   selector: 'app-edit-connection',
@@ -20,7 +21,7 @@ export class EditConnectionComponent implements OnInit {
   });
   nodeConnection!:NodeConnections;
   filteredNodes: string[] = [];
-  url = 'http://localhost:3000/connections/edit';
+  url = `${environment.url}/connections/edit`;
   id!:string;
   options = { headers: new HttpHeaders({ 'content-type': 'application/json' })};
   constructor(private route:ActivatedRoute,private httpClient: HttpClient,private  router: Router,private matSnackBar:MatSnackBar) { }
@@ -34,7 +35,7 @@ export class EditConnectionComponent implements OnInit {
         params: new HttpParams().append('id', encodeURI(String(params['id'])))
       }
       this.id=params['id'];
-      let subs$ = this.httpClient.get<NodeConnections>('http://localhost:3000/connections/getOne/', optionsConnections).subscribe((retNodeConnection: NodeConnections) => {
+      let subs$ =  this.httpClient.get<NodeConnections>(`${environment.url}/connections/getOne/`, optionsConnections).subscribe((retNodeConnection: NodeConnections) => {
         this.nodeConnection = retNodeConnection;
         this.connectionForm.controls.name.setValue(retNodeConnection.name);
         this.connectionForm.controls.toName.setValue(retNodeConnection.toName);
@@ -50,7 +51,7 @@ export class EditConnectionComponent implements OnInit {
     let options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
-    let subs$ = this.httpClient.get<Node[]>('http://localhost:3000/node/ListAll/',
+    let subs$ = this.httpClient.get<Node[]>(`${environment.url}/node/ListAll/`,
       options).subscribe((listSubscribe: Node[]) => {
           listSubscribe.forEach((nodeElement) => {
           this.filteredNodes.push(nodeElement.name);

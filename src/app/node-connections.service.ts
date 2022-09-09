@@ -29,7 +29,7 @@ export class NodeConnectionsService {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
         params: new HttpParams().append('project',encodeURI(localStorage.getItem('project')!))
       };
-      let sub$ = this.httpClient.put<{ status: string }>(`${environment.url}/connections/editName/`, { name: name,newName:newName }).subscribe(response => {
+      let sub$ = this.httpClient.put<{ status: string }>(`${environment.url}/connections/editName`, { name: name,newName:newName }).subscribe(response => {
         console.log('response status',response.status)
         if (response.status === 'OK') {
           accept(true);
