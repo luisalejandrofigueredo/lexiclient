@@ -30,7 +30,7 @@ export class ViewLanguageComponent implements OnInit {
   ngOnInit(): void {
     let subs$ = this.httpCLient.get<Language[]>(`${environment.url}/language/listAll/`,
       this.options).subscribe((listSubscribe: any) => {
-        this.DataSource = new MatTableDataSource(listSubscribe);
+        this.DataSource.data = listSubscribe;
         this.DataSource.paginator = this.paginator;
         subs$.unsubscribe();
       });
@@ -46,7 +46,7 @@ export class ViewLanguageComponent implements OnInit {
       if (result === 'Add') {
         let subs$ = this.httpCLient.get<Language[]>(`${environment.url}/language/listAll/`,
           this.options).subscribe((listSubscribe: any) => {
-            this.DataSource = new MatTableDataSource(listSubscribe);
+            this.DataSource.data = listSubscribe;
             this.DataSource.paginator = this.paginator;
             subs$.unsubscribe();
           });
@@ -68,7 +68,7 @@ export class ViewLanguageComponent implements OnInit {
             if (result === 'edit') {
               let subs$ = this.httpCLient.get<Language[]>(`${environment.url}/language/listAll/`,
                 this.options).subscribe((listSubscribe: any) => {
-                  this.DataSource = new MatTableDataSource(listSubscribe);
+                  this.DataSource.data =listSubscribe;
                   this.DataSource.paginator = this.paginator;
                   subs$.unsubscribe();
                 });

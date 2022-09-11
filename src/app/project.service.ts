@@ -23,6 +23,24 @@ export class ProjectService {
     });
   }
 
+  getOneByName(name: string): Promise<Project | boolean> {
+    return new Promise((resolve, reject) => {
+      const options = {
+        headers: new HttpHeaders({ 'content-type': 'application/json' }),
+        params: new HttpParams().append('name', encodeURI(name))
+      };
+      const url = `${environment.url}/project/getOneByName`;
+      let sub$ = this.httpClient.get<Project>(url, options).pipe(take(1)).subscribe(response => {
+        sub$.unsubscribe();
+        resolve(response)
+      }, (error) => {
+        sub$.unsubscribe();
+        reject(false);
+      });
+    });
+  }
+
+
   //Get One record project 
   getOne(id: string): Promise<Project | boolean> {
     return new Promise((resolve, reject) => {

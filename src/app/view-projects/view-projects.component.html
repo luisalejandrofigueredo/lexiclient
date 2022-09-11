@@ -59,7 +59,7 @@
         <th mat-header-cell *matHeaderCellDef><span style="padding-left: 10px;"></span><span
             style="font-size: 2em">select</span></th>
         <td mat-cell *matCellDef="let row">
-          <ng-container *ngIf="currentProject===row.projectName else elseTemplate">
+          <ng-container  *ngIf="currentProject===row.projectName else elseTemplate">
             <span style="padding-left: 10px;"></span><button mat-icon-button (click)="selectProject(row.projectName)">
               <mat-icon color="primary">check_circle</mat-icon>
             </button>
@@ -74,7 +74,7 @@
       <tr mat-header-row *matHeaderRowDef="['Name','Description','edit','delete','copy','nodes','connections','returnLanguage']"></tr>
       <tr mat-row *matRowDef="let row; columns: ['Name','Description','edit','delete','copy','nodes','connections','returnLanguage'];"></tr>
     </table>
-    <mat-paginator [pageSizeOptions]="pageSizeOptions" aria-label="Select page"></mat-paginator>
+    <mat-paginator [pageSize]="10" [pageSizeOptions]="pageSizeOptions" aria-label="Select page"></mat-paginator>
   </div>
 </div>
 <div mat-dialog-actions>

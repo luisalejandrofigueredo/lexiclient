@@ -34,6 +34,24 @@ export class NodeService {
   }
 
   //Get one node by name
+  getOneById(project: string, id: string): Promise<Node | boolean> {
+    return new Promise((resolve, reject) => {
+      const options = {
+        headers: new HttpHeaders({ 'content-type': 'application/json' }),
+        params: new HttpParams().append('project', encodeURI(project)).append('id', encodeURI(id))
+      };
+      const url = `${environment.url}/node/getOneById`;
+      let sub$ = this.httpClient.get<Node>(url, options).pipe(take(1)).subscribe(response => {
+        sub$.unsubscribe();
+        resolve(response)
+      }, (error) => {
+        sub$.unsubscribe();
+        reject(false);
+      });
+    });
+  }
+
+  //Get one node by name
   getOne(project: string, name: string): Promise<Node | boolean> {
     return new Promise((resolve, reject) => {
       const options = {

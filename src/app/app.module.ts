@@ -42,6 +42,9 @@ import { MainPageComponent } from './main-page/main-page.component';
 import { RunMachineComponent } from './run-machine/run-machine.component';
 import { CopyProjectComponent } from './copy-project/copy-project.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { ViewNodesConnectionsComponent } from './view-nodes-connections/view-nodes-connections.component';
+import { ViewNodesDirectConnectionsComponent } from './view-nodes-direct-connections/view-nodes-direct-connections.component';
+import { ViewNodesDirectConnectionsInverseComponent } from './view-nodes-direct-connections-inverse/view-nodes-direct-connections-inverse.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -62,7 +65,10 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     ProjectEditComponent,
     MainPageComponent,
     RunMachineComponent,
-    CopyProjectComponent
+    CopyProjectComponent,
+    ViewNodesConnectionsComponent,
+    ViewNodesDirectConnectionsComponent,
+    ViewNodesDirectConnectionsInverseComponent
   ],
   imports: [
     BrowserModule,

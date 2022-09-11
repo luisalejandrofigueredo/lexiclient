@@ -10,7 +10,7 @@ import { YesNoComponent } from '../yes-no/yes-no.component';
 import { DialogData } from '../yes-no/dialog-data';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NodeService } from '../node.service'
-import {NodeConnectionsService} from '../node-connections.service'
+import { NodeConnectionsService } from '../node-connections.service'
 @Component({
   selector: 'app-viewnodes',
   templateUrl: './viewnodes.component.html',
@@ -22,12 +22,20 @@ export class ViewnodesComponent implements OnInit, AfterViewInit {
   pageSizeOptions: number[] = [10, 25, 100];
   header = new HttpHeaders
   params: parPage = { skip: 0, limit: 10 };
-  project!:string|null;
+  project!: string | null;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  constructor(private nodeConnectionService:NodeConnectionsService,private nodeService: NodeService, private matSnackBar: MatSnackBar, private matDialog: MatDialog, private httpClient: HttpClient, private router: Router) { }
+  constructor(private nodeConnectionService: NodeConnectionsService, private nodeService: NodeService, private matSnackBar: MatSnackBar, private matDialog: MatDialog, private httpClient: HttpClient, private router: Router) { }
   ngAfterViewInit() {
     this.DataSource.paginator = this.paginator;
   }
+
+
+  nodeConnections(id: string, name: string) {
+    this.router.navigate(['/viewNodesDirectConnection',id]);
+
+  }
+
+
   ngOnInit(): void {
     this.getNodes();
   }
@@ -36,13 +44,13 @@ export class ViewnodesComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/newNode']);
   }
 
-  nodeDelete(id: string,name:string) {
+  nodeDelete(id: string, name: string) {
     let dialogRef = this.matDialog.open(YesNoComponent, { data: { dialogHeader: 'Delete node', message: `You are sure to delete this node ` } as DialogData });
     dialogRef.afterClosed().subscribe((response) => {
       if (response === 'Ok') {
         const promNodeDelete = this.nodeService.nodeDelete(id);
-        const promNodeConnections= this.nodeConnectionService.deleteNodeConnections(localStorage.getItem('project')!,name);
-        Promise.all([promNodeDelete,promNodeConnections]).then((deleteActions) => {
+        const promNodeConnections = this.nodeConnectionService.deleteNodeConnections(localStorage.getItem('project')!, name);
+        Promise.all([promNodeDelete, promNodeConnections]).then((deleteActions) => {
           if (typeof deleteActions[0] !== 'boolean') {
             this.matSnackBar.open('Deleted', `Node ${deleteActions[0]}`, { duration: 3000 });
           }
@@ -55,23 +63,23 @@ export class ViewnodesComponent implements OnInit, AfterViewInit {
           else {
             this.matSnackBar.open('Delete error in node', '', { duration: 3000 });
           }
-        }).catch((error) => { console.log('Error in Promise all')});
+        }).catch((error) => { console.log('Error in Promise all') });
         this.getNodes();
       }
     });
   }
 
   async getNodes() {
-    if (localStorage.getItem('project')===null){
+    if (localStorage.getItem('project') === null) {
       this.router.navigate(['/']);
     } else {
-      this.project=localStorage.getItem('project');  
+      this.project = localStorage.getItem('project');
     }
-    console.log('local storage',this.project);
+    console.log('local storage', this.project);
     await this.nodeService.getAll(this.project!).then(list => {
       this.DataSource.paginator = this.paginator;
       if (typeof list === 'object' && typeof list !== 'undefined') {
-        this.DataSource = new MatTableDataSource(list);
+        this.DataSource.data = list;
       }
     }).catch((error) => { console.log('Error') })
   }
@@ -86,12 +94,12 @@ export class ViewnodesComponent implements OnInit, AfterViewInit {
     };
     let subs$ = this.httpClient.get<Node[]>('http://localhost:3000/node/ListAll/',
       options).subscribe((listSubscribe: any) => {
-       this.getNodes();
-      subs$.unsubscribe();
+        this.getNodes();
+        subs$.unsubscribe();
       });
   }
 
-  gotoProjects(){
+  gotoProjects() {
     this.router.navigate(['viewProjects']);
   }
 }

@@ -15,6 +15,7 @@ import { ProjectEditComponent } from './project-edit/project-edit.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { RunMachineComponent } from './run-machine/run-machine.component';
 import { CopyProjectComponent } from "./copy-project/copy-project.component";
+import { ViewNodesDirectConnectionsComponent } from "./view-nodes-direct-connections/view-nodes-direct-connections.component";
 const routes: Routes = [
   { path: 'newNode', component: NodenewComponent },
   { path: 'viewNodes', component: ViewnodesComponent },
@@ -30,6 +31,7 @@ const routes: Routes = [
   { path: 'projectEdit/:id', component: ProjectEditComponent },
   { path: 'runMachine', component: RunMachineComponent },
   { path:'contentCopy/:id',component:CopyProjectComponent},
+  { path: 'viewNodesDirectConnection/:id',component:ViewNodesDirectConnectionsComponent},
   { path: '', component: MainPageComponent }
 ];
 

@@ -1,5 +1,5 @@
 import { HttpHeaders } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { parPage } from '../interfaces/parpage';
@@ -23,21 +23,33 @@ export class ViewProjectsComponent implements OnInit {
   header = new HttpHeaders
   params: parPage = { skip: 0, limit: 10 };
   currentProject!: string | null;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatPaginator,{static:false}) paginator!: MatPaginator;
+  @HostListener('window:keydown', ['$event'])
+  async onKeyPress($event: KeyboardEvent) {
+    if (($event.ctrlKey || $event.metaKey) && $event.keyCode == 86)
+      await this.projectService.getOneByName(localStorage.getItem('project')!)
+        .then((resolve) => {
+            this.projectCopy((<Project>resolve)._id!)
+        }).catch(() => { });
+  }
   constructor(private matDialog: MatDialog, private matSnackBar: MatSnackBar, private projectService: ProjectService, private router: Router) { }
-
+  ngAfterViewInit() {
+    this.DataSource.paginator = this.paginator
+  }
   ngOnInit(): void {
     this.currentProject = (localStorage.getItem('project') !== null) ? localStorage.getItem('project') : '';
     this.getData();
   }
+
   async getData() {
     await this.projectService.getAll().then(resolve => {
-      this.DataSource = new MatTableDataSource(resolve);
+      this.DataSource.data = resolve;
     }).catch(reject => {
       console.log('Reject No data');
     });
   }
   add() { this.router.navigate(['/newProject']) }
+
   projectEdit(id: string) {
     this.router.navigate(['/projectEdit', id]);
     this.getData();
@@ -62,13 +74,13 @@ export class ViewProjectsComponent implements OnInit {
   }
 
   async projectNodes(id: string, projectName: string) {
-      localStorage.setItem('project', projectName);
-      await this.router.navigate(['viewNodes']);
+    localStorage.setItem('project', projectName);
+    await this.router.navigate(['viewNodes']);
   }
 
-  async projectConnections(id:string,projectName:string){
-      localStorage.setItem('project', projectName);
-      await this.router.navigate(['viewConnections']);
+  async projectConnections(id: string, projectName: string) {
+    localStorage.setItem('project', projectName);
+    await this.router.navigate(['viewConnections']);
   }
 
   async projectCopy(id: string) {
