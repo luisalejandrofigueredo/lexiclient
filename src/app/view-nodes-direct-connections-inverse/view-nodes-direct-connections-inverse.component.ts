@@ -37,7 +37,7 @@ export class ViewNodesDirectConnectionsInverseComponent implements OnInit {
 
   getAll(project:string,id:string){
     this.nodeService.getOneById(project,id).then((accept)=>{
-      this.nodeConnectionsService.listAllConnectionsNode((<Node>accept).name).then((accept)=>{
+      this.nodeConnectionsService.listAllConnectionsToNode((<Node>accept).name).then((accept)=>{
         this.DataSource.data=accept as NodeConnections[];
         console.log('Accept',accept);
       })

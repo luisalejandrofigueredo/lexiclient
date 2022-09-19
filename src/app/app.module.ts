@@ -20,6 +20,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatMenuModule} from '@angular/material/menu';
 import { environment } from '../environments/environment';
 import { NodenewComponent } from './nodenew/nodenew.component';
 import { ViewnodesComponent } from './viewnodes/viewnodes.component';
@@ -45,6 +46,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { ViewNodesConnectionsComponent } from './view-nodes-connections/view-nodes-connections.component';
 import { ViewNodesDirectConnectionsComponent } from './view-nodes-direct-connections/view-nodes-direct-connections.component';
 import { ViewNodesDirectConnectionsInverseComponent } from './view-nodes-direct-connections-inverse/view-nodes-direct-connections-inverse.component';
+import { LexigraphComponent } from './lexigraph/lexigraph.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -68,7 +70,8 @@ import { ViewNodesDirectConnectionsInverseComponent } from './view-nodes-direct-
     CopyProjectComponent,
     ViewNodesConnectionsComponent,
     ViewNodesDirectConnectionsComponent,
-    ViewNodesDirectConnectionsInverseComponent
+    ViewNodesDirectConnectionsInverseComponent,
+    LexigraphComponent
   ],
   imports: [
     BrowserModule,
@@ -90,6 +93,7 @@ import { ViewNodesDirectConnectionsInverseComponent } from './view-nodes-direct-
     MatAutocompleteModule,
     MatDialogModule,
     MatTooltipModule,
+    MatMenuModule,
     FlexLayoutModule,
     YesNoComponent,
     ServiceWorkerModule.register('ngsw-worker.js', {

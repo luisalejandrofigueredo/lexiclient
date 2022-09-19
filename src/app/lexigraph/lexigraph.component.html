@@ -1,0 +1,17 @@
+<p>Machine</p>
+<canvas #myCanvas width="640" height="400" (contextmenu)="menu($event)"></canvas>
+<mat-menu #animals="matMenu">
+</mat-menu>
+
+
+
+<div style="visibility: hidden; position: fixed;" 
+[style.left]="menuTopLeftPosition.x" 
+[style.top]="menuTopLeftPosition.y" 
+[matMenuTriggerFor]="rightMenu"></div>
+
+
+<mat-menu #rightMenu="matMenu">
+  <button mat-menu-item (click)="addNode()" >Add Node</button>
+  <button mat-menu-item (click)="addConnection()">Add Connection</button>
+</mat-menu>

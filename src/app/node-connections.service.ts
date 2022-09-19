@@ -9,6 +9,12 @@ import { environment } from '../environments/environment';
 export class NodeConnectionsService {
 
   constructor(private httpClient: HttpClient) { }
+  /**
+   * 
+   * @param project 
+   * @param name 
+   * @returns 
+   */
   deleteNodeConnections(project:string,name: string): Promise<string | boolean> {
     return new Promise((accept, reject) => {
       let options = {
@@ -22,7 +28,13 @@ export class NodeConnectionsService {
         (error) => reject(false));
     });
   }
-
+  
+  /**
+   * 
+   * @param name 
+   * @param newName 
+   * @returns 
+   */
   updateConnectionName(name: string,newName:string): Promise<boolean> {
     return new Promise((accept, reject) => {
       const options = {
@@ -42,6 +54,12 @@ export class NodeConnectionsService {
       });
     });
   }
+
+  /**
+   * 
+   * @param name 
+   * @returns 
+   */
   listAllConnectionsNode(name:string): Promise<NodeConnections[] | boolean> {
     return new Promise((accept, reject) => {
       const options = {
@@ -59,7 +77,35 @@ export class NodeConnectionsService {
         });
     })
   }
-  listAll(): Promise<NodeConnections[] | boolean> {
+
+/**
+ * 
+ * @param toName 
+ * @returns 
+ */
+  listAllConnectionsToNode(toName:string): Promise<NodeConnections[] | boolean> {
+    return new Promise((accept, reject) => {
+      const options = {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+        params: new HttpParams().append('project',encodeURI(localStorage.getItem('project')!))
+        .append('toName',toName)
+      };
+      let subs$ = this.httpClient.get<NodeConnections[]>(`${environment.url}/connections/listAllConnectionsToNode/`,
+        options).pipe(take(1)).subscribe((response: NodeConnections[]) => {
+          subs$.unsubscribe();
+          accept(response)
+        }, (error) => {
+          subs$.unsubscribe();
+          reject(false)
+        });
+    })
+  }
+
+/**
+ * 
+ * @returns 
+ */
+listAll(): Promise<NodeConnections[] | boolean> {
     return new Promise((accept, reject) => {
       const options = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -76,7 +122,12 @@ export class NodeConnectionsService {
     })
   }
 
-  listAllProject(project:string): Promise<NodeConnections[] | boolean> {
+/**
+ * 
+ * @param project 
+ * @returns 
+ */
+listAllProject(project:string): Promise<NodeConnections[] | boolean> {
     return new Promise((accept, reject) => {
       const options = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
