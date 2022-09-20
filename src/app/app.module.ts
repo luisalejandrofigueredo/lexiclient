@@ -47,6 +47,7 @@ import { ViewNodesConnectionsComponent } from './view-nodes-connections/view-nod
 import { ViewNodesDirectConnectionsComponent } from './view-nodes-direct-connections/view-nodes-direct-connections.component';
 import { ViewNodesDirectConnectionsInverseComponent } from './view-nodes-direct-connections-inverse/view-nodes-direct-connections-inverse.component';
 import { LexigraphComponent } from './lexigraph/lexigraph.component';
+import { SelectNodeComponent } from './select-node/select-node.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -71,7 +72,8 @@ import { LexigraphComponent } from './lexigraph/lexigraph.component';
     ViewNodesConnectionsComponent,
     ViewNodesDirectConnectionsComponent,
     ViewNodesDirectConnectionsInverseComponent,
-    LexigraphComponent
+    LexigraphComponent,
+    SelectNodeComponent
   ],
   imports: [
     BrowserModule,

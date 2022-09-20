@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>Select node to include in the diagram</h2>
+<mat-dialog-content>
+  <p style="text-align:center; font-size: 2em;color: aliceblue;background-color: blue;">Nodes list</p>
+  <table mat-table #table [dataSource]="DataSource">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef><span style="font-size: 2em">Name</span></th>
+      <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+    </ng-container>
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef><span style="padding-left: 10px;"></span><span style="font-size: 2em">Select</span></th>
+      <td mat-cell *matCellDef="let row"><span style="padding-left: 10px;"></span><button mat-icon-button (click)="selectNode(row._id)">
+        <mat-icon color="primary">check_circle</mat-icon>
+      </button></td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="['name','select']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['name','select']"></tr>
+  </table>
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
+    <span class="project">{{this.project}}</span>
+    <mat-paginator  [pageSizeOptions]="pageSizeOptions"  (page)="pageEvent($event)" aria-label="Select page" ></mat-paginator>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button type="button" (click)="Cancel()">Cancel</button>
+</mat-dialog-actions>

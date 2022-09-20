@@ -11,6 +11,12 @@ export class NodeService {
   constructor(private httpClient: HttpClient) {
   }
 
+/**
+ * 
+ * @param project 
+ * @param name 
+ * @returns 
+ */
   getOneByName(project: string, name: string): Promise<Node | boolean> {
     return new Promise((resolve, reject) => {
       const options = {
@@ -33,7 +39,13 @@ export class NodeService {
     });
   }
 
-  //Get one node by name
+
+  /**
+   * !Get one node by name
+   * @param project 
+   * @param id 
+   * @returns 
+   */
   getOneById(project: string, id: string): Promise<Node | boolean> {
     return new Promise((resolve, reject) => {
       const options = {
@@ -51,7 +63,12 @@ export class NodeService {
     });
   }
 
-  //Get one node by name
+  /**
+   * Get one node by name
+   * @param project 
+   * @param name 
+   * @returns 
+   */
   getOne(project: string, name: string): Promise<Node | boolean> {
     return new Promise((resolve, reject) => {
       const options = {
@@ -69,7 +86,11 @@ export class NodeService {
     });
   }
 
-  //Get all nodes
+  /**
+   * Get all nodes 
+   * @param project 
+   * @returns 
+   */
   getAll(project: string): Promise<Node[] | boolean> {
     return new Promise((resolve, reject) => {
       const options = {
@@ -86,12 +107,39 @@ export class NodeService {
       });
     });
   }
-//nodeAdd
+
+  /**
+   * Get all nodes Hidden
+   * @param project 
+   * @returns 
+   */
+  getAllHidden(project: string): Promise<Node[] | boolean> {
+    return new Promise((resolve, reject) => {
+      const options = {
+        headers: new HttpHeaders({ 'content-type': 'application/json' }),
+        params: new HttpParams().append('project', encodeURI(project))
+      };
+      const url = `${environment.url}/node/ListAllHidden/`;
+      let sub$ = this.httpClient.get<Node[]>(url, options).pipe(take(1)).subscribe(response => {
+        sub$.unsubscribe();
+        resolve(response)
+      }, (error) => {
+        sub$.unsubscribe();
+        reject(false);
+      });
+    });
+  }
+
+  /**
+   * NodeAdd
+   * @param node 
+   * @returns 
+   */
   nodeAdd(node: Node): Promise<Node | boolean> {
     return new Promise((accept, reject) => {
       const options = { headers: new HttpHeaders({ 'content-type': 'application/json' }) };
       const url = `${environment.url}/node/add`;
-      console.log('node',node);
+      console.log('node', node);
       this.httpClient.post<any>(url, node, options).pipe(take(1)).subscribe(response => {
         if (response.status !== 'duplicate node') {
           accept(response)
@@ -101,7 +149,12 @@ export class NodeService {
       });
     });
   }
-//node delete
+
+  /**
+   * Node delete
+   * @param id 
+   * @returns 
+   */
   nodeDelete(id: string): Promise<string | boolean> {
     return new Promise((resolve, reject) => {
       const options = {
@@ -118,8 +171,13 @@ export class NodeService {
       }, (error) => { reject(false); });
     });
   }
-  
-  //Delete one connection and array of connections in Node
+
+  /**
+   * Delete one connection and array of connections in Node
+   * @param nodeId 
+   * @param connectionId 
+   * @returns 
+   */
   deleteOneConnection(nodeId: string, connectionId: string): Promise<boolean> {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -137,6 +195,11 @@ export class NodeService {
     });
   }
 
+/**
+ * 
+ * @param node 
+ * @returns 
+ */
   nodeEdit(node: Node): Promise<boolean> {
     return new Promise((accept, reject) => {
       const options = {
@@ -154,6 +217,12 @@ export class NodeService {
     });
   }
 
+/**
+ * 
+ * @param project 
+ * @param copyProject 
+ * @returns 
+ */
   copyNodes(project: string, copyProject: string): Promise<Node[] | boolean> {
     return new Promise((accept, reject) => {
       const options = {
@@ -163,7 +232,7 @@ export class NodeService {
       let subs$ = this.httpClient.get<Node[]>(`${environment.url}/node/getNodesProject`,
         options).subscribe(async (response: Node[]) => {
           console.log(`${environment.url}/nodes/getNodesProject`, response)
-          console.log('Copy project',copyProject)
+          console.log('Copy project', copyProject)
           await this.addNodes(copyProject, response);
           subs$.unsubscribe();
           accept(response)
@@ -173,15 +242,21 @@ export class NodeService {
         });
     });
   }
-
+  
+/**
+ * 
+ * @param project 
+ * @param nodes 
+ * @returns 
+ */
   addNodes(project: string, nodes: Node[]): Promise<boolean> {
     return new Promise((accept, reject) => {
       try {
         nodes.forEach(async element => {
-          console.log('adding element:&s , project', element,project)
+          console.log('adding element:&s , project', element, project)
           await this.nodeAdd({ project: project, name: element.name, final: element.final }).then((response) => {
             console.log('add response', response)
-          }).catch((error=>{console.log('add response', error),reject(false)}));
+          }).catch((error => { console.log('add response', error), reject(false) }));
         })
         accept(true);
       } catch (error) {
