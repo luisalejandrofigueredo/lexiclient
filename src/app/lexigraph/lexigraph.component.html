@@ -1,11 +1,19 @@
 <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
-  <button (click)="zoom_in()" mat-fab><mat-icon>zoom_in</mat-icon></button>
-  <button mat-fab (click)="zoom_out()"><mat-icon>zoom_out</mat-icon></button>
+  <button (click)="zoom_in()" mat-fab>
+    <mat-icon>zoom_in</mat-icon>
+  </button>
+  <button mat-fab (click)="zoom_out()">
+    <mat-icon>zoom_out</mat-icon>
+  </button>
 </div>
 <canvas #myCanvas width="640" height="400" (contextmenu)="menu($event)"></canvas>
-<div style="visibility: hidden; position: fixed;" [style.left]="menuTopLeftPosition.x"
-  [style.top]="menuTopLeftPosition.y" [matMenuTriggerFor]="rightMenu"></div>
-<mat-menu #rightMenu="matMenu">
-  <button mat-menu-item (click)="addNode()">Add Node</button>
-  <button mat-menu-item (click)="addConnection()">Add Connection</button>
+<div #Trigger style="visibility: hidden; position: fixed;" [style.left]="menuTopLeftPosition.x"
+  [style.top]="menuTopLeftPosition.y" [matMenuTriggerFor]="outSideMenu"></div>
+<mat-menu #outSideMenu="matMenu">
+  <ng-template matMenuContent>
+    <button mat-menu-item (click)="addNode()">Hide/View Node</button>
+  </ng-template>
 </mat-menu>
+
+
+

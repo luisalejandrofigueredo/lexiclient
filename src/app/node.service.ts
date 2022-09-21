@@ -108,6 +108,28 @@ export class NodeService {
     });
   }
 
+/**
+ * Get all visible
+ * @param project 
+ * @returns 
+ */
+  getAllVisible(project: string): Promise<Node[] | boolean> {
+    return new Promise((resolve, reject) => {
+      const options = {
+        headers: new HttpHeaders({ 'content-type': 'application/json' }),
+        params: new HttpParams().append('project', encodeURI(project))
+      };
+      const url = `${environment.url}/node/ListAllVisible/`;
+      let sub$ = this.httpClient.get<Node[]>(url, options).pipe(take(1)).subscribe(response => {
+        sub$.unsubscribe();
+        resolve(response)
+      }, (error) => {
+        sub$.unsubscribe();
+        reject(false);
+      });
+    });
+  }
+
   /**
    * Get all nodes Hidden
    * @param project 
@@ -195,6 +217,31 @@ export class NodeService {
     });
   }
 
+
+  /**
+ * 
+ * @param node 
+ * @returns 
+ */
+   nodeSetVisible(node: Node): Promise<boolean> {
+    return new Promise((accept, reject) => {
+      const options = {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+      };
+      let subs$ = this.httpClient.put<any>(`${environment.url}/node/setVisible/`, node, options).subscribe((response) => {
+        if (response.status !== 'Error set visible') {
+          subs$.unsubscribe();
+          accept(true);
+        } else {
+          subs$.unsubscribe();
+          reject(false);
+        }
+      }, (error) => { subs$.unsubscribe(); console.error('Error', error) });
+    });
+  }
+
+  
+
 /**
  * 
  * @param node 
@@ -254,7 +301,11 @@ export class NodeService {
       try {
         nodes.forEach(async element => {
           console.log('adding element:&s , project', element, project)
-          await this.nodeAdd({ project: project, name: element.name, final: element.final }).then((response) => {
+          await this.nodeAdd({
+            project: project, name: element.name, final: element.final,
+            coord: element.coord,
+            visible: element.visible
+          }).then((response) => {
             console.log('add response', response)
           }).catch((error => { console.log('add response', error), reject(false) }));
         })

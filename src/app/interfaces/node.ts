@@ -5,5 +5,7 @@ export interface Node {
     name:string,
     final:boolean,
     nodeConnection?:NodeConnections[],
+    coord:{x:number,y:number},
+    visible:boolean,
     __v?:number
 }
