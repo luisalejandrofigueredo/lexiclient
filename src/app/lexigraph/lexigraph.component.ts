@@ -87,13 +87,16 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
     node.coord = { x: this.cursor.x, y: this.cursor.y };
     node.visible = true;
     await this.nodeService.nodeSetVisible(node).then((resolve) => {
-      console.log('Resolve:', resolve);
       this.ctx.beginPath();
       this.ctx.arc(this.cursor.x, this.cursor.y, 10, 0, 360);
       this.ctx.fillText(node.name, this.cursor.x + 10, this.cursor.y - 10);
       this.ctx.closePath();
       this.ctx.stroke();
     });
+  }
+
+  hiddenNode() {
+    
   }
 
   async inNode(): Promise<boolean> {
@@ -106,9 +109,6 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
     })
   }
 
-  hiddenNode() {
-
-  }
 
   distance(x: number, y: number, xx: number, yy: number): number {
     return Math.pow(Math.pow(x - xx, 2) + Math.pow(y - yy, 2), 1 / 2);
