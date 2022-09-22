@@ -11,7 +11,9 @@
   [style.top]="menuTopLeftPosition.y" [matMenuTriggerFor]="outSideMenu"></div>
 <mat-menu #outSideMenu="matMenu">
   <ng-template matMenuContent>
-    <button mat-menu-item (click)="addNode()">Hide/View Node</button>
+    <button *ngIf="!menuOutside" mat-menu-item (click)="addNode()">View node</button>
+    <button *ngIf="menuOutside" mat-menu-item (click)="selectNodeHide()">Hide node</button>
+    <button *ngIf="menuOutside" mat-menu-item (click)="menuViewConnections()">View connections</button>
   </ng-template>
 </mat-menu>
 

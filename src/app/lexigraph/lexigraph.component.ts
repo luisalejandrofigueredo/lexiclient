@@ -14,11 +14,13 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
   context!: CanvasRenderingContext2D;
   menuTopLeftPosition = { x: '0', y: '0' };
   canvasContext: any;
+  menuOutside: boolean = false;
   cursor = { x: 0, y: 0 };
   @ViewChild('myCanvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('Trigger', { static: true }) matMenuTrigger!: MatMenuTrigger;
+  @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger!: MatMenuTrigger;
   private ctx!: CanvasRenderingContext2D;
   scale = 1
+  cacheNode!: Node;
   constructor(private nodeService: NodeService, public dialog: MatDialog) { }
   ngAfterViewInit(): void {
   }
@@ -27,6 +29,14 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
     this.canvasContext = this.canvas.nativeElement;
     this.ctx = this.canvasContext.getContext('2d')!;
     this.beginDraw();
+  }
+
+  fillCircle(x:number, y:number, radius:number, color:string) {
+    this.ctx.fillStyle = color;
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    this.ctx.fill();
+    this.ctx.fillStyle = 'black';
   }
 
   clear() {
@@ -46,6 +56,7 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
           this.ctx.fillText(element.name, element.coord.x + 10, element.coord.y - 10);
           this.ctx.closePath();
           this.ctx.stroke();
+          this.fillCircle(element.coord.x, element.coord.y, 10,'red');
         }
       });
     });
@@ -57,13 +68,14 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
     this.menuTopLeftPosition.x = event.clientX + 'px';
     this.menuTopLeftPosition.y = event.clientY + 'px';
     this.cursor = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-    this.inNode().then((accept)=>{}).catch(()=>{
+    this.inNode().then((accept) => {
+      this.menuOutside = true;
+      this.cacheNode = <Node>accept;
+      this.matMenuTrigger.openMenu();
+    }).catch(() => {
+      this.menuOutside = false;
       this.matMenuTrigger.openMenu();
     })
-  }
-
-  menuOutside(event:MouseEvent){
-    
   }
 
   addNode() {
@@ -83,6 +95,19 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
     });
   }
 
+  menuViewConnections() {
+    this.nodeService.getOneById(localStorage.getItem('project')!, <string>this.cacheNode._id).then((node) => {
+      console.log('view connections')
+      this.viewConnections(node as Node);
+    });
+  }
+
+  selectNodeHide() {
+    this.nodeService.getOneById(localStorage.getItem('project')!, <string>this.cacheNode._id).then((node) => {
+      this.setHideNode(node as Node);
+    });
+  }
+
   async setVisibleNode(node: Node) {
     node.coord = { x: this.cursor.x, y: this.cursor.y };
     node.visible = true;
@@ -95,15 +120,40 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
     });
   }
 
-  hiddenNode() {
-    
+  async setHideNode(node: Node) {
+    node.visible = false;
+    await this.nodeService.nodeSetVisible(node).then((resolve) => {
+      this.clear();
+      this.beginDraw();
+    });
   }
 
-  async inNode(): Promise<boolean> {
-    return new Promise (async (accept,reject)=>{
+  viewConnections(node: Node): void {
+    console.log('Node', node);
+    node.nodeConnection?.forEach(element => {
+      console.log('Element:', element)
+      this.nodeService.getOneByName(localStorage.getItem('project')!, element.name).then((node) => {
+        if ((<Node>node).visible === true) {
+          this.nodeService.getOneByName(localStorage.getItem('project')!, element.toName).then((toNode) => {
+            this.drawConnection(<Node>node, <Node>toNode);
+          });
+        }
+      });
+    })
+  }
+
+  drawConnection(node: Node, toNode: Node) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(node.coord.x, node.coord.y);
+    this.ctx.lineTo(toNode.coord.x, toNode.coord.y);
+    this.ctx.stroke();
+  }
+
+  async inNode(): Promise<Node | boolean> {
+    return new Promise(async (accept, reject) => {
       await this.nodeService.getAllVisible(localStorage.getItem('project')!).then((node) => {
         const exist = (<Node[]>node).find(element => this.distance(element.coord.x, element.coord.y, this.cursor.x, this.cursor.y) < 20)
-        if (exist) accept(true);
+        if (exist) accept(exist);
       });
       reject(false);
     })
