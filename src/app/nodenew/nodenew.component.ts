@@ -5,6 +5,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Node } from '../interfaces/node';
 import { Router } from '@angular/router';
 import { NodeService } from '../node.service'
+import { ThemePalette } from '@angular/material/core';
+import { TmplAstRecursiveVisitor } from '@angular/compiler';
+
 @Component({
   selector: 'app-nodenew',
   templateUrl: './nodenew.component.html',
@@ -13,9 +16,12 @@ import { NodeService } from '../node.service'
 export class NodenewComponent implements OnInit {
   nodeForm = new FormGroup({
     name: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
+    colorCtr:new FormControl<string>('', { nonNullable: true}),
     final: new FormControl<boolean>(false, { nonNullable: true })
   });
-
+  disabled:boolean=false;
+  touchUi:boolean=true;
+  color:string='';
   constructor(private nodeService: NodeService, private httpClient: HttpClient, private matSnackBar: MatSnackBar, private router: Router) { }
 
   ngOnInit(): void {

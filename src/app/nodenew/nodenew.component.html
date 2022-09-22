@@ -1,10 +1,18 @@
 <form [formGroup]="nodeForm" (ngSubmit)="submit()">
-  <mat-form-field>
-    <input matInput autocomplete="off" placeholder="Name" formControlName="name">
-  </mat-form-field>
-  <mat-checkbox formControlName="final">Final</mat-checkbox>
-  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
-    <button color="primary" mat-raised-button type="button" (click)="cancel()">Cancel</button>
-    <button color="primary" mat-raised-button type="submit" [disabled]="!this.nodeForm.valid">Accept</button>
+  <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="gappx">
+    <mat-form-field>
+      <input matInput autocomplete="off" placeholder="Name" formControlName="name">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput [ngxMatColorPicker]="picker" [formControl]="this.nodeForm.controls.colorCtr"
+        [disabled]="disabled">
+      <ngx-mat-color-toggle matSuffix [for]="picker"></ngx-mat-color-toggle>
+      <ngx-mat-color-picker #picker [touchUi]="touchUi"></ngx-mat-color-picker>
+    </mat-form-field>
+    <mat-checkbox formControlName="final">Final</mat-checkbox>
+    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
+      <button color="primary" mat-raised-button type="button" (click)="cancel()">Cancel</button>
+      <button color="primary" mat-raised-button type="submit" [disabled]="!this.nodeForm.valid">Accept</button>
+    </div>
   </div>
 </form>

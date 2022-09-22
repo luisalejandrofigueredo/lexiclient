@@ -4,6 +4,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { NodeService } from '../node.service';
 import { SelectNodeComponent } from '../select-node/select-node.component';
 import { Node } from '../interfaces/node';
+import { TrigonometryService } from "../trigonometry.service";
+import { Point } from "../interfaces/point";
 @Component({
   selector: 'app-lexigraph',
   templateUrl: './lexigraph.component.html',
@@ -20,7 +22,7 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
   private ctx!: CanvasRenderingContext2D;
   scale = 1
   cacheNode!: Node;
-  constructor(private nodeService: NodeService, public dialog: MatDialog) { }
+  constructor(private tr: TrigonometryService, private nodeService: NodeService, public dialog: MatDialog) { }
   ngAfterViewInit(): void {
   }
 
@@ -30,7 +32,9 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
     this.beginDraw();
   }
 
-  fillCircle(x:number, y:number, radius:number, color:string) {
+
+
+  fillCircle(x: number, y: number, radius: number, color: string) {
     this.ctx.fillStyle = color;
     this.ctx.beginPath();
     this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
@@ -50,15 +54,19 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
     this.nodeService.getAllVisible(localStorage.getItem('project')!).then((nodes) => {
       (<Node[]>nodes).forEach(element => {
         if (element.visible === true) {
-          this.ctx.beginPath();
-          this.ctx.arc(element.coord.x, element.coord.y, 10, 0, 360);
-          this.ctx.fillText(element.name, element.coord.x + 10, element.coord.y - 10);
-          this.ctx.closePath();
-          this.ctx.stroke();
-          this.fillCircle(element.coord.x, element.coord.y, 10,'red');
+          this.drawNode(element.coord.x,element.coord.y,element.name);
         }
       });
     });
+  }
+
+  drawNode(x:number,y:number,name:string){
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, 10, 0, 360);
+    this.ctx.fillText(name, x + 10, y - 10);
+    this.ctx.closePath();
+    this.ctx.stroke();
+    this.fillCircle(x,y, 10, 'red');
   }
 
   menu(event: MouseEvent) {
@@ -110,11 +118,7 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
     node.coord = { x: this.cursor.x, y: this.cursor.y };
     node.visible = true;
     await this.nodeService.nodeSetVisible(node).then((resolve) => {
-      this.ctx.beginPath();
-      this.ctx.arc(this.cursor.x, this.cursor.y, 10, 0, 360);
-      this.ctx.fillText(node.name, this.cursor.x + 10, this.cursor.y - 10);
-      this.ctx.closePath();
-      this.ctx.stroke();
+      this.drawNode(this.cursor.x,this.cursor.y,node.name);
     });
   }
 
@@ -140,25 +144,28 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
   }
 
   drawConnection(node: Node, toNode: Node) {
-    this.ctx.beginPath();
-    this.ctx.moveTo(node.coord.x, node.coord.y);
-    this.ctx.lineTo(toNode.coord.x, toNode.coord.y);
-    this.ctx.stroke();
+    if (node.visible === true && toNode.visible === true) {
+      const nodeAngle = this.tr.angle(node.coord.x, node.coord.y, toNode.coord.x, toNode.coord.y);
+      const toNodeAngle = this.tr.angle(toNode.coord.x, toNode.coord.y, node.coord.x, node.coord.y);
+      const moveNode = this.tr.move(node.coord.x, node.coord.y, nodeAngle, 20);
+      const moveToNode = this.tr.move(toNode.coord.x, toNode.coord.y, toNodeAngle, 20);
+      this.ctx.beginPath();
+      this.ctx.moveTo(moveNode.x, moveNode.y);
+      this.ctx.lineTo(moveToNode.x, moveToNode.y);
+      this.ctx.stroke();
+      this.fillCircle(moveNode.x, moveNode.y, 3, 'black');
+      this.fillCircle(moveToNode.x, moveToNode.y, 3, 'black');
+    }
   }
 
   async inNode(): Promise<Node | boolean> {
     return new Promise(async (accept, reject) => {
       await this.nodeService.getAllVisible(localStorage.getItem('project')!).then((node) => {
-        const exist = (<Node[]>node).find(element => this.distance(element.coord.x, element.coord.y, this.cursor.x, this.cursor.y) < 20)
+        const exist = (<Node[]>node).find(element => this.tr.distance(element.coord.x, element.coord.y, this.cursor.x, this.cursor.y) < 20)
         if (exist) accept(exist);
       });
       reject(false);
     })
-  }
-
-
-  distance(x: number, y: number, xx: number, yy: number): number {
-    return Math.pow(Math.pow(x - xx, 2) + Math.pow(y - yy, 2), 1 / 2);
   }
 
   setVisibleNodeFalse(node: Node) {
