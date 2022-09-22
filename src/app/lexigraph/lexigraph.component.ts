@@ -132,6 +132,7 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
         if ((<Node>node).visible === true) {
           this.nodeService.getOneByName(localStorage.getItem('project')!, element.toName).then((toNode) => {
             this.drawConnection(<Node>node, <Node>toNode);
+            this.beginDraw();
           });
         }
       });
