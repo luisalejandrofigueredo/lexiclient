@@ -4,7 +4,6 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { NodeService } from '../node.service';
 import { SelectNodeComponent } from '../select-node/select-node.component';
 import { Node } from '../interfaces/node';
-import { ReplaySubject } from 'rxjs';
 @Component({
   selector: 'app-lexigraph',
   templateUrl: './lexigraph.component.html',
@@ -97,7 +96,6 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
 
   menuViewConnections() {
     this.nodeService.getOneById(localStorage.getItem('project')!, <string>this.cacheNode._id).then((node) => {
-      console.log('view connections')
       this.viewConnections(node as Node);
     });
   }
@@ -129,9 +127,7 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
   }
 
   viewConnections(node: Node): void {
-    console.log('Node', node);
     node.nodeConnection?.forEach(element => {
-      console.log('Element:', element)
       this.nodeService.getOneByName(localStorage.getItem('project')!, element.name).then((node) => {
         if ((<Node>node).visible === true) {
           this.nodeService.getOneByName(localStorage.getItem('project')!, element.toName).then((toNode) => {
