@@ -51,9 +51,8 @@ export class TrigonometryService {
   inLine(positionX: number, positionY: number, x: number, y: number, xx: number, yy: number): boolean {
     const distance = this.distance(x, y, xx, yy);
     const distanceToFist = this.distance(x, y, positionX, positionY);
-    const distanceToLast = this.distance(positionX, positionY, x, y);
-    if (distanceToFist + distanceToLast - distance < 10) {
-      console.log('Distance:', distanceToFist + distanceToLast - distance < 10);
+    const distanceToLast = this.distance(positionX, positionY, xx, yy);
+    if ((distanceToFist + distanceToLast - distance)< 20) {
       return true;
     }
     else {
