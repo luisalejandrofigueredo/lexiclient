@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, NgZone } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { NodeService } from '../node.service';
+import { NodeConnectionsService } from "../node-connections.service";
 import { SelectNodeComponent } from '../select-node/select-node.component';
 import { Node } from '../interfaces/node';
 import { TrigonometryService } from "../trigonometry.service";
@@ -15,14 +16,14 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
   context!: CanvasRenderingContext2D;
   menuTopLeftPosition = { x: '0', y: '0' };
   canvasContext: any;
-  menuOutside: boolean = false;
-  cursor = { x: 0, y: 0 };
+  typeMenu: number = 0;
+  cursor: Point = { x: 0, y: 0 };
   @ViewChild('myCanvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger!: MatMenuTrigger;
   private ctx!: CanvasRenderingContext2D;
   scale = 1
   cacheNode!: Node;
-  constructor(private tr: TrigonometryService, private nodeService: NodeService, public dialog: MatDialog) { }
+  constructor(private ngZone: NgZone, private connectionsService: NodeConnectionsService, private tr: TrigonometryService, private nodeService: NodeService, public dialog: MatDialog) { }
   ngAfterViewInit(): void {
   }
 
@@ -54,34 +55,88 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
     this.nodeService.getAllVisible(localStorage.getItem('project')!).then((nodes) => {
       (<Node[]>nodes).forEach(element => {
         if (element.visible === true) {
-          this.drawNode(element.coord.x,element.coord.y,element.name);
+          this.drawNode(element.coord.x, element.coord.y, element.name);
         }
       });
     });
   }
 
-  drawNode(x:number,y:number,name:string){
+  drawNode(x: number, y: number, name: string) {
     this.ctx.beginPath();
     this.ctx.arc(x, y, 10, 0, 360);
     this.ctx.fillText(name, x + 10, y - 10);
     this.ctx.closePath();
     this.ctx.stroke();
-    this.fillCircle(x,y, 10, 'red');
+    this.fillCircle(x, y, 10, 'red');
   }
 
-  menu(event: MouseEvent) {
+  async menu(event: MouseEvent) {
     const rect = this.canvas.nativeElement.getBoundingClientRect();
     event.preventDefault();
     this.menuTopLeftPosition.x = event.clientX + 'px';
     this.menuTopLeftPosition.y = event.clientY + 'px';
     this.cursor = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-    this.inNode().then((accept) => {
-      this.menuOutside = true;
+    await this.inNode().then((accept) => {
+      console.log('innode');
+      this, this.typeMenu = 1;
       this.cacheNode = <Node>accept;
       this.matMenuTrigger.openMenu();
-    }).catch(() => {
-      this.menuOutside = false;
-      this.matMenuTrigger.openMenu();
+    }).catch(async () => {
+      await this.inLine(this.cursor).then((_accept) => {
+        console.log('inline');
+        this.typeMenu = 2;
+        this.matMenuTrigger.openMenu();
+      }).catch((_reject) => {
+        console.log('offline');
+        this.typeMenu = 0;
+        this.matMenuTrigger.openMenu();
+      });
+    })
+  }
+
+  async inLine(cursor: Point): Promise<boolean> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        var retResolve: boolean = false;
+        await this.nodeService.getAll(localStorage.getItem('project')!).then(async (nodes) => {
+          for (let index = 0; index < (<Node[]>nodes).length; index++) {
+            const element = (<Node[]>nodes)[index];
+            let prom=await this.verifyPosition(element, cursor).then((_accept) => {
+              console.log('retResolve===true');
+              retResolve = true;
+            }).catch((_reject)=>{console.log('outside line');}) 
+            console.log('ret promise',prom)
+          }
+        }).catch(() => console.log('error en get all'));
+        console.log('ret resolve', retResolve);
+        if (retResolve) {
+          console.log('resolve inline')
+          resolve(true);
+        } else {
+          console.log('reject inline')
+          reject(false);
+        }
+      } catch (error) {
+         console.log('error in promise')
+      }
+    });
+  }
+
+  verifyPosition(node: Node, cursor: Point): Promise<boolean> {
+    return new Promise<boolean>(async (resolve, reject) => {
+      try {
+        for (let index = 0; index < node.nodeConnection.length; index++) {
+          const element = node.nodeConnection[index];
+          await this.nodeService.getOneByName(localStorage.getItem('project')!, element.toName).then((nodeToName) => {
+            if (this.tr.inLine(cursor.x, cursor.y, node.coord.x, node.coord.y, (<Node>nodeToName).coord.x, (<Node>nodeToName).coord.y) === true) {
+              resolve(true);
+            }
+          }).catch(() => console.log('not found'))
+        }
+        reject(true);
+      } catch (error) {
+       console.log('Error en promise')  
+      }
     })
   }
 
@@ -117,14 +172,14 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
   async setVisibleNode(node: Node) {
     node.coord = { x: this.cursor.x, y: this.cursor.y };
     node.visible = true;
-    await this.nodeService.nodeSetVisible(node).then((resolve) => {
-      this.drawNode(this.cursor.x,this.cursor.y,node.name);
+    await this.nodeService.nodeSetVisible(node).then((_resolve) => {
+      this.drawNode(this.cursor.x, this.cursor.y, node.name);
     });
   }
 
   async setHideNode(node: Node) {
     node.visible = false;
-    await this.nodeService.nodeSetVisible(node).then((resolve) => {
+    await this.nodeService.nodeSetVisible(node).then((_resolve) => {
       this.clear();
       this.beginDraw();
     });
@@ -137,7 +192,7 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
           this.nodeService.getOneByName(localStorage.getItem('project')!, element.toName).then((toNode) => {
             this.drawConnection(<Node>node, <Node>toNode);
             this.beginDraw();
-          });
+          })
         }
       });
     })
@@ -170,7 +225,7 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
 
   setVisibleNodeFalse(node: Node) {
     node.visible = false;
-    this.nodeService.nodeSetVisible(node).then((resolve) => {
+    this.nodeService.nodeSetVisible(node).then((_resolve) => {
     });
   }
 

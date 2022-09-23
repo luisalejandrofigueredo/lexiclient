@@ -304,6 +304,7 @@ export class NodeService {
           await this.nodeAdd({
             project: project, name: element.name, final: element.final,
             coord: element.coord,
+            nodeConnection:[],
             visible: element.visible
           }).then((response) => {
             console.log('add response', response)
