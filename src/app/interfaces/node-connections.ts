@@ -6,5 +6,6 @@ export interface NodeConnections {
     character: string;
     isLanguage:boolean;
     isRegularExpression:boolean,
+    isVisible:boolean,
     __v?:number
 }

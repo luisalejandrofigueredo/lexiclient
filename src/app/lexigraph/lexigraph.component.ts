@@ -23,7 +23,7 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
   private ctx!: CanvasRenderingContext2D;
   scale = 1
   cacheNode!: Node;
-  constructor(private ngZone: NgZone, private connectionsService: NodeConnectionsService, private tr: TrigonometryService, private nodeService: NodeService, public dialog: MatDialog) { }
+  constructor(private connectionsService: NodeConnectionsService, private tr: TrigonometryService, private nodeService: NodeService, public dialog: MatDialog) { }
   ngAfterViewInit(): void {
   }
 
@@ -36,7 +36,8 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
 
 
   fillCircle(x: number, y: number, radius: number, color: string) {
-    this.ctx.fillStyle = color;
+    console.log('Color',color);
+    this.ctx.fillStyle = '#'+color;
     this.ctx.beginPath();
     this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
     this.ctx.fill();
@@ -55,19 +56,19 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
     this.nodeService.getAllVisible(localStorage.getItem('project')!).then((nodes) => {
       (<Node[]>nodes).forEach(element => {
         if (element.visible === true) {
-          this.drawNode(element.coord.x, element.coord.y, element.name);
+          this.drawNode(element.coord.x, element.coord.y, element.name,element.color);
         }
       });
     });
   }
 
-  drawNode(x: number, y: number, name: string) {
+  drawNode(x: number, y: number, name: string,color:string) {
     this.ctx.beginPath();
     this.ctx.arc(x, y, 10, 0, 360);
     this.ctx.fillText(name, x + 10, y - 10);
+    this.fillCircle(x, y, 10,color);
     this.ctx.closePath();
     this.ctx.stroke();
-    this.fillCircle(x, y, 10, 'red');
   }
 
   async menu(event: MouseEvent) {
@@ -100,7 +101,7 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
             const element = (<Node[]>nodes)[index];
             await this.verifyPosition(element, cursor).then((_accept) => {
               retResolve = true;
-            }).catch((_reject)=>{}) 
+            }).catch((_reject) => { })
           }
         }).catch(() => console.log('error en get all'));
         if (retResolve) {
@@ -109,7 +110,7 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
           reject(false);
         }
       } catch (error) {
-         console.log('error in promise')
+        console.log('error in promise')
       }
     });
   }
@@ -119,15 +120,17 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
       try {
         for (let index = 0; index < node.nodeConnection.length; index++) {
           const element = node.nodeConnection[index];
-          await this.nodeService.getOneByName(localStorage.getItem('project')!, element.toName).then((nodeToName) => {
-            if (this.tr.inLine(cursor.x, cursor.y, node.coord.x, node.coord.y, (<Node>nodeToName).coord.x, (<Node>nodeToName).coord.y) === true) {
-              resolve(true);
-            }
-          }).catch(() => console.log('not found'))
+          if (element.isVisible) {
+            await this.nodeService.getOneByName(localStorage.getItem('project')!, element.toName).then((nodeToName) => {
+              if (this.tr.inLine(cursor.x, cursor.y, node.coord.x, node.coord.y, (<Node>nodeToName).coord.x, (<Node>nodeToName).coord.y) === true) {
+                resolve(true);
+              }
+            }).catch(() => console.log('not found'))
+          }
         }
         reject(true);
       } catch (error) {
-       console.log('Error en promise')  
+        console.log('Error en promise')
       }
     })
   }
@@ -165,7 +168,7 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
     node.coord = { x: this.cursor.x, y: this.cursor.y };
     node.visible = true;
     await this.nodeService.nodeSetVisible(node).then((_resolve) => {
-      this.drawNode(this.cursor.x, this.cursor.y, node.name);
+      this.drawNode(this.cursor.x, this.cursor.y, node.name,node.color);
     });
   }
 
@@ -179,15 +182,17 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
 
   viewConnections(node: Node): void {
     node.nodeConnection?.forEach(element => {
-      this.nodeService.getOneByName(localStorage.getItem('project')!, element.name).then((node) => {
-        if ((<Node>node).visible === true) {
-          this.nodeService.getOneByName(localStorage.getItem('project')!, element.toName).then((toNode) => {
-            this.drawConnection(<Node>node, <Node>toNode);
-            this.beginDraw();
-          })
-        }
-      });
-    })
+      if (element.isVisible === true) {
+        this.nodeService.getOneByName(localStorage.getItem('project')!, element.name).then((node) => {
+          if ((<Node>node).visible === true) {
+            this.nodeService.getOneByName(localStorage.getItem('project')!, element.toName).then((toNode) => {
+              this.drawConnection(<Node>node, <Node>toNode);
+              this.beginDraw();
+            })
+          }
+        });
+      }
+    });
   }
 
   drawConnection(node: Node, toNode: Node) {

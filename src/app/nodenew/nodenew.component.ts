@@ -16,7 +16,7 @@ import { TmplAstRecursiveVisitor } from '@angular/compiler';
 export class NodenewComponent implements OnInit {
   nodeForm = new FormGroup({
     name: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
-    colorCtr:new FormControl<string>('', { nonNullable: true}),
+    colorCtr:new FormControl(),
     final: new FormControl<boolean>(false, { nonNullable: true })
   });
   disabled:boolean=false;
@@ -29,7 +29,11 @@ export class NodenewComponent implements OnInit {
   }
 
   async submit() {
-    let body = { project: localStorage.getItem('project'),name: this.nodeForm.controls.name.value, final: this.nodeForm.controls.final.value } as Node;
+    const color=this.nodeForm.controls.colorCtr.value?.hex
+    let body = { project: localStorage.getItem('project'),
+    name: this.nodeForm.controls.name.value,
+     final: this.nodeForm.controls.final.value,
+     color:color,coord:{x:100,y:100} } as Node;
     await this.nodeService.nodeAdd(body).then(response => {
       let snack = this.matSnackBar.open(`Node created Name:${typeof response !== 'boolean' ? response.name : ''}`, 'Node created', {
         duration: 3000

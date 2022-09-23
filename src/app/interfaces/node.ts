@@ -6,6 +6,7 @@ export interface Node {
     final:boolean,
     nodeConnection:NodeConnections[],
     coord:{x:number,y:number},
+    color:string,
     visible:boolean,
     __v?:number
 }

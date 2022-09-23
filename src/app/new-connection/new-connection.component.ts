@@ -8,7 +8,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ViewLanguageComponent } from '../view-language/view-language.component'
 import { NodeConnections } from '../interfaces/node-connections';
 import { NodeConnectionsService } from '../node-connections.service';
-import {NodeService} from '../node.service';
+import { NodeService } from '../node.service';
+import { visitAll } from '@angular/compiler';
 @Component({
   selector: 'app-new-connection',
   templateUrl: './new-connection.component.html',
@@ -18,6 +19,7 @@ export class NewConnectionComponent implements OnInit {
   connectionForm = new FormGroup({
     name: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
     toName: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
+    visible: new FormControl<boolean>(true, { nonNullable: true, validators: Validators.required }),
     character: new FormControl<string>('', { nonNullable: true, validators: Validators.required }),
     isRegularExpression: new FormControl<boolean>(false, { nonNullable: true, validators: Validators.required }),
     isLanguage: new FormControl<boolean>(false, { nonNullable: true, validators: Validators.required })
@@ -28,7 +30,7 @@ export class NewConnectionComponent implements OnInit {
   action!: string;
   id!: string;
   oldName!: string;
-  constructor(private nodeService:NodeService,private nodeConnectionService:NodeConnectionsService,private activatedRoute: ActivatedRoute, public dialog: MatDialog, private httpClient: HttpClient, private router: Router, private matSnackBar: MatSnackBar) { }
+  constructor(private nodeService: NodeService, private nodeConnectionService: NodeConnectionsService, private activatedRoute: ActivatedRoute, public dialog: MatDialog, private httpClient: HttpClient, private router: Router, private matSnackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
@@ -50,7 +52,8 @@ export class NewConnectionComponent implements OnInit {
               toName: nodeConnection.toName,
               character: nodeConnection.character,
               isLanguage: nodeConnection.isLanguage,
-              isRegularExpression: nodeConnection.isRegularExpression
+              isRegularExpression: nodeConnection.isRegularExpression,
+              visible: nodeConnection.isVisible
             });
           } else {
             console.log('Node Connection', nodeConnection.status)
@@ -59,9 +62,11 @@ export class NewConnectionComponent implements OnInit {
         }, (error) => { });
       }
     });
-       this.nodeService.getAll(localStorage.getItem('project')!).then((response)=>{typeof response!=='boolean'? response.forEach((nodeElement) => {
+    this.nodeService.getAll(localStorage.getItem('project')!).then((response) => {
+      typeof response !== 'boolean' ? response.forEach((nodeElement) => {
         this.filteredNodes.push(nodeElement.name);
-      }): [] as NodeConnections[] }).catch((reject)=>{});
+      }) : [] as NodeConnections[]
+    }).catch((reject) => { });
   }
 
   addLanguage() {
@@ -99,7 +104,8 @@ export class NewConnectionComponent implements OnInit {
         name: this.connectionForm.controls.name.value,
         toName: this.connectionForm.controls.toName.value,
         character: this.connectionForm.controls.character.value,
-        isRegularExpression: this.connectionForm.controls.isRegularExpression.value
+        isRegularExpression: this.connectionForm.controls.isRegularExpression.value,
+        isVisible: this.connectionForm.controls.visible.value
       };
       this.httpClient.put<any>('http://localhost:3000/connections/edit', body, options).subscribe(response => {
         if (response.status !== 'duplicate node') {
@@ -117,7 +123,14 @@ export class NewConnectionComponent implements OnInit {
       });
     }
     else {
-      let body: NodeConnections = { project: localStorage.getItem('project')!, isLanguage: this.connectionForm.controls.isLanguage.value, name: this.connectionForm.controls.name.value, toName: this.connectionForm.controls.toName.value, character: this.connectionForm.controls.character.value, isRegularExpression: this.connectionForm.controls.isRegularExpression.value };
+      let body: NodeConnections = {
+        project: localStorage.getItem('project')!,
+        isLanguage: this.connectionForm.controls.isLanguage.value,
+        name: this.connectionForm.controls.name.value,
+        toName: this.connectionForm.controls.toName.value,
+        character: this.connectionForm.controls.character.value,
+        isRegularExpression: this.connectionForm.controls.isRegularExpression.value, isVisible: this.connectionForm.controls.visible.value
+      };
       let sub$ = this.httpClient.post<any>(this.url, body, this.options).subscribe(async response => {
         console.log('response', response)
         if (response.status !== 'duplicate node' && response.status !== 'add connection to node failed') {

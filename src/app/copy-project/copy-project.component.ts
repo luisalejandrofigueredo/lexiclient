@@ -74,7 +74,7 @@ export class CopyProjectComponent implements OnInit {
       await this.nodeConnectionService.listAllProject(project).then((resolve) => {
         if (typeof resolve !== 'boolean') {
           resolve.forEach(element => {
-            body = { project: copyProject, isLanguage: element.isLanguage, name: element.name, toName: element.toName, character: element.character, isRegularExpression: element.isRegularExpression }
+            body = { project: copyProject, isLanguage: element.isLanguage, name: element.name, toName: element.toName, character: element.character, isRegularExpression: element.isRegularExpression,isVisible:element.isVisible }
             let sub$ = this.httpClient.post<NodeConnections | { status: string }>(this.url, body, options).subscribe(async response => {
               console.log('response', response)
               if ((<{ status: string }>response).status !== 'duplicate node' && (<{ status: string }>response).status !== 'add connection to node failed') {

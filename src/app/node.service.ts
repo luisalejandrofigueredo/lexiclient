@@ -305,7 +305,8 @@ export class NodeService {
             project: project, name: element.name, final: element.final,
             coord: element.coord,
             nodeConnection:[],
-            visible: element.visible
+            visible: element.visible,
+            color:element.color
           }).then((response) => {
             console.log('add response', response)
           }).catch((error => { console.log('add response', error), reject(false) }));
