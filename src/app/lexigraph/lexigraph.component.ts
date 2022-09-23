@@ -71,23 +71,20 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
   }
 
   async menu(event: MouseEvent) {
-    const rect = this.canvas.nativeElement.getBoundingClientRect();
     event.preventDefault();
+    const rect = this.canvas.nativeElement.getBoundingClientRect();
     this.menuTopLeftPosition.x = event.clientX + 'px';
     this.menuTopLeftPosition.y = event.clientY + 'px';
     this.cursor = { x: event.clientX - rect.left, y: event.clientY - rect.top };
     await this.inNode().then((accept) => {
-      console.log('innode');
       this, this.typeMenu = 1;
       this.cacheNode = <Node>accept;
       this.matMenuTrigger.openMenu();
     }).catch(async () => {
       await this.inLine(this.cursor).then((_accept) => {
-        console.log('inline');
         this.typeMenu = 2;
         this.matMenuTrigger.openMenu();
       }).catch((_reject) => {
-        console.log('offline');
         this.typeMenu = 0;
         this.matMenuTrigger.openMenu();
       });
@@ -101,19 +98,14 @@ export class LexigraphComponent implements OnInit, AfterViewInit {
         await this.nodeService.getAll(localStorage.getItem('project')!).then(async (nodes) => {
           for (let index = 0; index < (<Node[]>nodes).length; index++) {
             const element = (<Node[]>nodes)[index];
-            let prom=await this.verifyPosition(element, cursor).then((_accept) => {
-              console.log('retResolve===true');
+            await this.verifyPosition(element, cursor).then((_accept) => {
               retResolve = true;
-            }).catch((_reject)=>{console.log('outside line');}) 
-            console.log('ret promise',prom)
+            }).catch((_reject)=>{}) 
           }
         }).catch(() => console.log('error en get all'));
-        console.log('ret resolve', retResolve);
         if (retResolve) {
-          console.log('resolve inline')
           resolve(true);
         } else {
-          console.log('reject inline')
           reject(false);
         }
       } catch (error) {
