@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'lexiclient'`, () => {
+  it(`should have as title 'bondClient'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('lexiclient');
+    expect(app.title).toEqual('bondClient');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('lexiclient app is running!');
+    expect(compiled.querySelector('.content span')?.textContent).toContain('bondClient app is running!');
   });
 });
